@@ -33,15 +33,15 @@ export default function RootLayout() {
 				options={{
 					title: "Loan",
 					tabBarIcon: () => (
-						<IonIcons name="calculator" size={24} color="black" />
+						<FaIcons name="dollar" size={24} color="black" />
 					),
 				}}
 			/>
 			<Tabs.Screen
-				name="backup"
+				name="setting"
 				options={{
-					title: "Backup",
-					tabBarIcon: () => <FaIcons name="floppy-o" size={24} color="black" />,
+					title: "Setting",
+					tabBarIcon: () => <FaIcons name="cog" size={24} color="black" />,
 				}}
 			/>
 		</Tabs>

@@ -1,0 +1,112 @@
+import type { CurrencyCodeT } from "@/types";
+
+export function delay(t: number) {
+	return new Promise((r) => setTimeout(r, t).unref());
+}
+/**
+ * Format values into decimal value (e.g 2.3k).
+ *
+ * * Default to `decimal` unless specified.
+ * @param value the value to format
+ * @param maxSigDigit the maximum number of significant digits to display
+ * @returns the formatted string
+ */
+export function formatNumber(value: number, maxSigDigit: number = 3) {
+	return new Intl.NumberFormat("en-NG", {
+		style: "decimal",
+		maximumSignificantDigits: maxSigDigit,
+		notation: "compact",
+	}).format(value);
+}
+
+export function formatMoney<T extends string>(
+	value: number,
+  currency: CurrencyCodeT<T>,
+	maxFracDigit: number = 2
+) {
+	return Intl.NumberFormat("en-NG", {
+		style: "currency",
+		currency,
+		maximumFractionDigits: maxFracDigit,
+	}).format(value);
+}
+
+export function getCurrencySymbol(currencyCode: string) {
+  const symbolMap = new Map([
+    ["ngn", "₦"],
+    ["usd", "$"],
+    ["eur", "€"],
+    ["gbp", "£"],
+  ])
+  const code = currencyCode.toLowerCase();
+  if (symbolMap.has(code)) return symbolMap.get(code);
+  return "#";
+}
+
+/**
+ * Throttles a function to run at most once per every 'limit' milliseconds.
+ *
+ * @param {Function} func The function to debounce.
+ * @param {number} delay The delay in milliseconds before the function is executed.
+ */
+export function debounce<F extends (...args: unknown[]) => void>(
+	func: F,
+	delay: number,
+) {
+	let timeoutId: NodeJS.Timeout | number | null = null;
+
+	return function (this: ThisParameterType<F>, ...args: Parameters<F>) {
+		if (timeoutId) clearTimeout(timeoutId);
+
+		timeoutId = setTimeout(() => {
+			func.apply(this, args);
+		}, delay);
+	};
+}
+
+/**
+ * Capitalizes the first letter of every word in a given string.
+ * @param str The input string.
+ * @returns The string with all words capitalized.
+ */
+export function capitalizeWords(str: string) {
+	return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+export function formatDate(date: Date) {
+	return new Intl.DateTimeFormat("en-NG", {
+		year: "numeric",
+		month: "short",
+		day: "2-digit",
+	}).format(date);
+}
+
+export function formatDateTime(date: Date) {
+	return new Intl.DateTimeFormat("en-NG", {
+		year: "numeric",
+		month: "short",
+		day: "2-digit",
+		hour: "2-digit",
+		minute: "2-digit",
+	}).format(date);
+}
+
+/**
+ * Truncates text if it exceeds the specified maximum length, appending "...".
+ * @param text The input string.
+ * @param maxLength The maximum allowed length before truncation.
+ * @returns The original or truncated string.
+ */
+export function truncateText(text: string, maxLength: number) {
+	if (text.length <= maxLength) return text;
+	return `${text.slice(0, maxLength)}...`;
+}
+/**
+ * Validates a phone number using a regex that generally matches E.164 format.
+ * E.164 numbers are 15 digits long maximum, starting with an optional '+' sign,
+ * followed by 0 to 14 digits (first digit must be 0-9).
+ */
+export function isPhoneValid(phone: string) {
+	const phoneRegex = /^\+?[0-9]\d{1,14}$/; // E.164 format
+	return phoneRegex.test(phone);
+}
