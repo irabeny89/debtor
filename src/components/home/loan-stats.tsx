@@ -1,4 +1,5 @@
 import MaIcons from "@expo/vector-icons/MaterialIcons";
+import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
 import useLoanStats from "@/hooks/use-loan-stats";
 import useSettingData from "@/hooks/use-setting-data";
@@ -16,24 +17,31 @@ export default function LoanStats() {
 				<View style={styles.stats}>
 					<View style={styles.row}>
 						<Text style={styles.number}>
-              {currencySymbol}{formatNumber(granted)}
+							{currencySymbol}
+							{formatNumber(granted)}
 						</Text>
 						<Text style={styles.text}>Granted</Text>
 					</View>
 					<View style={styles.row}>
 						<Text style={styles.number}>
-							{currencySymbol}{formatNumber(settled)}
+							{currencySymbol}
+							{formatNumber(settled)}
 						</Text>
 						<Text style={styles.text}>Settled</Text>
 					</View>
 					<View style={styles.row}>
 						<Text style={styles.number}>
-							{currencySymbol}{formatNumber(unsettled)}
+							{currencySymbol}
+							{formatNumber(unsettled)}
 						</Text>
 						<Text style={styles.text}>Unsettled</Text>
 					</View>
 				</View>
 			</View>
+      <Image
+				source={require("@/assets/images/static.photos-abstract.webp")}
+				style={styles.image}
+			/>
 		</View>
 	);
 }
@@ -50,12 +58,13 @@ const styles = StyleSheet.create({
 		marginBottom: 4,
 	},
 	box: {
+		paddingVertical: 10,
 		paddingHorizontal: 20,
 		flexDirection: "row",
 		gap: 10,
 		alignItems: "center",
 		borderWidth: 2,
-		borderRadius: 2,
+		borderBottomWidth: 0,
 	},
 	stats: {
 		flex: 1,
@@ -75,5 +84,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		fontSize: 16,
 		textAlign: "left",
+	},
+	image: {
+		width: "100%",
+		height: 80,
+		borderTopWidth: 0,
+		borderWidth: 2,
 	},
 });

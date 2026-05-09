@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
 	dateContainer: {
 		justifyContent: "center",
 		alignItems: "center",
-		marginVertical: 40,
+		marginVertical: 30,
 	},
 	dateLabel: {
 		fontSize: 26,

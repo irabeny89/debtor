@@ -18,9 +18,9 @@ export default function Index() {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+    flex: 1,
 	},
 	scrollContainer: {
-		gap: 40,
+		gap: 20,
 	},
 });
