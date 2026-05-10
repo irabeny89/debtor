@@ -1,7 +1,6 @@
-import FaIcons from "@expo/vector-icons/FontAwesome";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function RootLayout() {
 	return (
@@ -9,41 +8,55 @@ export default function RootLayout() {
 			screenOptions={{
 				headerShown: false,
 				tabBarStyle: styles.tabBarStyle,
-				tabBarItemStyle: styles.tabBarItemStyle,
 				tabBarLabelStyle: styles.tabBarLabelStyle,
-				tabBarIconStyle: styles.tabBarIconStyle,
+				tabBarActiveTintColor: "#4F46E5",
+				tabBarInactiveTintColor: "#9CA3AF",
 			}}
 		>
 			<Tabs.Screen
 				name="index"
 				options={{
 					title: "Home",
-					tabBarIcon: () => <FaIcons name="home" size={24} color="black" />,
+					tabBarIcon: ({ focused, color }) => (
+						<View style={[styles.iconWrapper, focused && styles.activeIconWrapper]}>
+							<IonIcons name={focused ? "home" : "home-outline"} size={22} color={color} />
+						</View>
+					),
 				}}
 			/>
 			<Tabs.Screen
 				name="debtor"
 				options={{
-					title: "Debtor",
-          tabBarIcon: () => <IonIcons name="person" size={24} color="black" />,
-          headerShown: true,
-          headerTitle: "Debtors"
+					title: "Debtors",
+					headerShown: true,
+					headerTitle: "Debtors",
+					tabBarIcon: ({ focused, color }) => (
+						<View style={[styles.iconWrapper, focused && styles.activeIconWrapper]}>
+							<IonIcons name={focused ? "people" : "people-outline"} size={22} color={color} />
+						</View>
+					),
 				}}
 			/>
 			<Tabs.Screen
 				name="loan"
 				options={{
-					title: "Loan",
-					tabBarIcon: () => (
-						<FaIcons name="dollar" size={24} color="black" />
+					title: "Loans",
+					tabBarIcon: ({ focused, color }) => (
+						<View style={[styles.iconWrapper, focused && styles.activeIconWrapper]}>
+							<IonIcons name={focused ? "wallet" : "wallet-outline"} size={22} color={color} />
+						</View>
 					),
 				}}
 			/>
 			<Tabs.Screen
 				name="setting"
 				options={{
-					title: "Setting",
-					tabBarIcon: () => <FaIcons name="cog" size={24} color="black" />,
+					title: "Settings",
+					tabBarIcon: ({ focused, color }) => (
+						<View style={[styles.iconWrapper, focused && styles.activeIconWrapper]}>
+							<IonIcons name={focused ? "settings" : "settings-outline"} size={22} color={color} />
+						</View>
+					),
 				}}
 			/>
 		</Tabs>
@@ -54,27 +67,32 @@ const styles = StyleSheet.create({
 	tabBarStyle: {
 		position: "absolute",
 		bottom: 20,
-		marginHorizontal: 10,
-		borderRadius: 40,
+		marginHorizontal: 16,
+		borderRadius: 24,
 		height: 75,
-		width: "95%",
-		elevation: 5,
-		// Optional: Add shadow for floating effect
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.2,
-		shadowRadius: 5,
+		elevation: 10,
+		shadowColor: "#4F46E5",
+		shadowOffset: { width: 0, height: 10 },
+		shadowOpacity: 0.15,
+		shadowRadius: 20,
+		backgroundColor: "#FFFFFF",
+		borderTopWidth: 0,
+		paddingBottom: 8,
+		paddingTop: 8,
 	},
-	tabBarItemStyle: {
+	iconWrapper: {
+		width: 40,
+		height: 40,
+		borderRadius: 20,
 		justifyContent: "center",
 		alignItems: "center",
-		height: "100%",
+	},
+	activeIconWrapper: {
+		backgroundColor: "#EEF2FF",
 	},
 	tabBarLabelStyle: {
-		fontSize: 12,
-		marginBottom: 8,
-	},
-	tabBarIconStyle: {
-		marginTop: 8,
+		fontSize: 11,
+		fontWeight: "600",
+		marginTop: 2,
 	},
 });
