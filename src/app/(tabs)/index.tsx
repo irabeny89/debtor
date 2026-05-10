@@ -22,5 +22,6 @@ const styles = StyleSheet.create({
 	},
 	scrollContainer: {
 		gap: 20,
+		paddingBottom: 120,
 	},
 });
