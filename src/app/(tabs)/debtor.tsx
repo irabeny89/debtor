@@ -6,6 +6,7 @@ import Tabs, { TabItem } from "@/components/tabs";
 import Pagination from "@/components/pagination";
 import useDebtorList from "@/hooks/use-debtor-list";
 import { DebtorT } from "@/types";
+import usePagination from "@/hooks/use-pagination";
 
 const renderDebtor = ({ item }: { item: DebtorT }) => <DebtorCard data={item} />
 
@@ -13,8 +14,6 @@ export default function DebtorScreen() {
 	const debtors = useDebtorList();
 	const [search, setSearch] = useState("");
 	const [activeTab, setActiveTab] = useState("All");
-	const [currentPage, setCurrentPage] = useState(1);
-	const itemsPerPage = 5;
 
 	const filterDebtors = () => {
 		let filtered = debtors;
@@ -37,16 +36,11 @@ export default function DebtorScreen() {
 	};
 
 	const filteredDebtors = filterDebtors();
-	const totalPages = Math.ceil(filteredDebtors.length / itemsPerPage);
-	const paginatedDebtors = filteredDebtors.slice(
-		(currentPage - 1) * itemsPerPage,
-		currentPage * itemsPerPage
-	);
-
-	useEffect(() => {
-		// Reset pagination when searching or changing tabs
-		setCurrentPage(1);
-	}, [search, activeTab]);
+	const { paginatedData, currentPage, totalPages, setCurrentPage } = usePagination({
+		itemsPerPage: 5,
+		list: filteredDebtors,
+		dependencies: [search, activeTab]
+	})
 
 	return (
 		<View style={styles.container}>
@@ -62,7 +56,7 @@ export default function DebtorScreen() {
 						<TabItem label="Suspended" onPress={() => setActiveTab("Suspended")} isActive={activeTab === "Suspended"} />
 					</Tabs>
 					<FlatList
-						data={paginatedDebtors}
+						data={paginatedData}
 						renderItem={renderDebtor}
 						keyExtractor={item => item.id}
 						contentContainerStyle={styles.listContainer}
