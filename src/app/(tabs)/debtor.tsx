@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DebtorCard from "@/components/debtor/debtor-card";
-import SearchAndAdd from "@/components/debtor/search-and-add";
 import Tabs, { TabItem } from "@/components/tabs";
 import Pagination from "@/components/pagination";
 import useDebtorList from "@/hooks/use-debtor-list";
 import { DebtorT } from "@/types";
 import usePagination from "@/hooks/use-pagination";
+import SearchInput from "@/components/search-input";
+import { Ionicons } from "@expo/vector-icons";
 
 const renderDebtor = ({ item }: { item: DebtorT }) => <DebtorCard data={item} />
 
@@ -44,7 +45,12 @@ export default function DebtorScreen() {
 
 	return (
 		<View style={styles.container}>
-			<SearchAndAdd onChange={setSearch} text={search} />
+			<SearchInput
+				containerStyle={styles.searchContainer}
+				placeholder="Find debtor"
+				onChange={setSearch}
+				text={search}
+			/>
 			{!filteredDebtors.length ? (
 				<Text style={styles.noItemText}>You have not added any debtor</Text>
 			) : (
@@ -62,6 +68,9 @@ export default function DebtorScreen() {
 						contentContainerStyle={styles.listContainer}
 						ListFooterComponent={<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
 					/>
+					<TouchableOpacity style={styles.floatingAdd}>
+						<Ionicons name="add" size={24} color="#FFFFFF" />
+					</TouchableOpacity>
 				</View>
 			)}
 		</View>
@@ -82,5 +91,25 @@ const styles = StyleSheet.create({
 		gap: 15,
 		marginTop: 20,
 		paddingBottom: 130,
+	},
+	searchContainer: {
+		paddingVertical: 0,
+	},
+	floatingAdd: {
+		position: "absolute",
+		bottom: 160,
+		right: 20,
+		width: 60,
+		height: 60,
+		borderRadius: 30,
+		backgroundColor: "#4F46E5",
+		justifyContent: "center",
+		alignItems: "center",
+		zIndex: 100,
+		elevation: 10,
+		shadowColor: "#4F46E5",
+		shadowOffset: { width: 0, height: 10 },
+		shadowOpacity: 0.15,
+		shadowRadius: 20,
 	}
 });
