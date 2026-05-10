@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import DebtorCard from "@/components/debtor/debtor-card";
 import SearchAndAdd from "@/components/debtor/search-and-add";
 import Tabs, { TabItem } from "@/components/tabs";
+import Pagination from "@/components/pagination";
 import useDebtorList from "@/hooks/use-debtor-list";
 import { DebtorT } from "@/types";
 
@@ -12,6 +13,14 @@ export default function DebtorScreen() {
 	const debtors = useDebtorList();
 	const [search, setSearch] = useState("");
 	const [activeTab, setActiveTab] = useState("All");
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 5;
+
+	// Reset pagination when searching or changing tabs
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [search, activeTab]);
+
 	const filterDebtorsByTab = () => {
 		switch (activeTab) {
 			case "Active":
@@ -26,6 +35,11 @@ export default function DebtorScreen() {
 	};
 
 	const filteredDebtors = filterDebtorsByTab();
+	const totalPages = Math.ceil(filteredDebtors.length / itemsPerPage);
+	const paginatedDebtors = filteredDebtors.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
 
 	return (
 		<View style={styles.container}>
@@ -33,7 +47,7 @@ export default function DebtorScreen() {
 			{!filteredDebtors.length ? (
 				<Text style={styles.noItemText}>You have not added any debtor</Text>
 			) : (
-				<View>
+				<View style={{ flex: 1 }}>
 					<Tabs>
 						<TabItem label="All" onPress={() => setActiveTab("All")} isActive={activeTab === "All"} />
 						<TabItem label="Active" onPress={() => setActiveTab("Active")} isActive={activeTab === "Active"} />
@@ -41,10 +55,11 @@ export default function DebtorScreen() {
 						<TabItem label="Suspended" onPress={() => setActiveTab("Suspended")} isActive={activeTab === "Suspended"} />
 					</Tabs>
 					<FlatList
-						data={filteredDebtors}
+						data={paginatedDebtors}
 						renderItem={renderDebtor}
 						keyExtractor={item => item.id}
 						contentContainerStyle={styles.listContainer}
+						ListFooterComponent={<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
 					/>
 				</View>
 			)}
@@ -65,6 +80,6 @@ const styles = StyleSheet.create({
 	listContainer: {
 		gap: 15,
 		marginTop: 20,
-		paddingBottom: 50,
+		paddingBottom: 130,
 	}
 });

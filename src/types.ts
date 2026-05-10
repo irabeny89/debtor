@@ -39,6 +39,7 @@ export type DebtorT = {
 	id: string;
 	firstName: string;
 	lastName: string;
+	gender: "m" | "f"
 	phone: string;
 	workPlace: string;
 	/**
