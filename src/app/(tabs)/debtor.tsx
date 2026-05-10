@@ -16,30 +16,37 @@ export default function DebtorScreen() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 5;
 
-	// Reset pagination when searching or changing tabs
-	useEffect(() => {
-		setCurrentPage(1);
-	}, [search, activeTab]);
+	const filterDebtors = () => {
+		let filtered = debtors;
 
-	const filterDebtorsByTab = () => {
-		switch (activeTab) {
-			case "Active":
-				return debtors.filter((debtor) => debtor.status === "Active");
-			case "Inactive":
-				return debtors.filter((debtor) => debtor.status === "Inactive");
-			case "Suspended":
-				return debtors.filter((debtor) => debtor.status === "Suspended");
-			default:
-				return debtors;
+		if (activeTab !== "All") {
+			filtered = filtered.filter((debtor) => debtor.status === activeTab);
 		}
+
+		if (search.trim()) {
+			const query = search.toLowerCase().trim();
+			filtered = filtered.filter((debtor) =>
+				debtor.firstName.toLowerCase().includes(query) ||
+				debtor.lastName.toLowerCase().includes(query) ||
+				debtor.phone.includes(query) ||
+				debtor.workPlace.toLowerCase().includes(query)
+			);
+		}
+
+		return filtered;
 	};
 
-	const filteredDebtors = filterDebtorsByTab();
+	const filteredDebtors = filterDebtors();
 	const totalPages = Math.ceil(filteredDebtors.length / itemsPerPage);
 	const paginatedDebtors = filteredDebtors.slice(
 		(currentPage - 1) * itemsPerPage,
 		currentPage * itemsPerPage
 	);
+
+	useEffect(() => {
+		// Reset pagination when searching or changing tabs
+		setCurrentPage(1);
+	}, [search, activeTab]);
 
 	return (
 		<View style={styles.container}>
