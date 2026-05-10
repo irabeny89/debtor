@@ -25,11 +25,10 @@ export default function RootLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="debtor"
+				name="(debtor)"
 				options={{
 					title: "Debtors",
-					headerShown: true,
-					headerTitle: "Debtors",
+					headerShown: false,
 					tabBarIcon: ({ focused, color }) => (
 						<View style={[styles.iconWrapper, focused && styles.activeIconWrapper]}>
 							<IonIcons name={focused ? "people" : "people-outline"} size={22} color={color} />

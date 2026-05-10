@@ -3,12 +3,14 @@ import { DebtorT } from "@/types";
 import { Ionicons } from "@expo/vector-icons"
 import useLoanList from "@/hooks/use-loan-list";
 import { calcLoanWorth, formatMoney } from "@/utils";
+import { useRouter } from "expo-router";
 
 type Props = {
   data: DebtorT
 }
 
 export default function DebtorCard({ data }: Props) {
+  const router = useRouter()
   const loans = useLoanList();
   const debtorLoans = loans.filter(loan => loan.debtorId === data.id);
   const loanWorth = debtorLoans.reduce((acc, loan) => acc + calcLoanWorth(loan), 0);
@@ -16,7 +18,10 @@ export default function DebtorCard({ data }: Props) {
   const initials = `${data.firstName?.[0] || ""}${data.lastName?.[0] || ""}`.toUpperCase();
 
   return (
-    <Pressable style={({ pressed }) => [styles.container, pressed && styles.containerPressed]}>
+    <Pressable
+      onPress={() => router.push({ pathname: "/detail", params: { id: data.id } })}
+      style={({ pressed }) => [styles.container, pressed && styles.containerPressed]}
+    >
       <View style={styles.header}>
         <View style={styles.avatarContainer}>
           <Text style={styles.avatarText}>{initials}</Text>

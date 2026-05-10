@@ -8,6 +8,7 @@ import { DebtorT } from "@/types";
 import usePagination from "@/hooks/use-pagination";
 import SearchInput from "@/components/search-input";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const renderDebtor = ({ item }: { item: DebtorT }) => <DebtorCard data={item} />
 
@@ -44,7 +45,7 @@ export default function DebtorScreen() {
 	})
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<SearchInput
 				containerStyle={styles.searchContainer}
 				placeholder="Find debtor"
@@ -68,12 +69,9 @@ export default function DebtorScreen() {
 						contentContainerStyle={styles.listContainer}
 						ListFooterComponent={<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
 					/>
-					<TouchableOpacity style={styles.floatingAdd}>
-						<Ionicons name="add" size={24} color="#FFFFFF" />
-					</TouchableOpacity>
 				</View>
 			)}
-		</View>
+		</SafeAreaView>
 	);
 }
 
