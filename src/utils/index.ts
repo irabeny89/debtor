@@ -1,8 +1,5 @@
-import type { CurrencyCodeT } from "@/types";
+import type { CurrencyCodeT, LoanT } from "@/types";
 
-export function delay(t: number) {
-	return new Promise((r) => setTimeout(r, t).unref());
-}
 /**
  * Format values into decimal value (e.g 2.3k).
  *
@@ -19,9 +16,17 @@ export function formatNumber(value: number, maxSigDigit: number = 3) {
 	}).format(value);
 }
 
+/**
+ * Formats a number as money (e.g. ₦2,000.00).
+ *
+ * @param value the value to format
+ * @param currency currency code (e.g. `NGN`, `USD`, `EUR`, `GBP`)
+ * @param maxFracDigit maximum number of fraction digits to display (default: 2)
+ * @returns the formatted money string (e.g. `₦2,000.00`)
+ */
 export function formatMoney<T extends string>(
 	value: number,
-  currency: CurrencyCodeT<T>,
+	currency: CurrencyCodeT<T>,
 	maxFracDigit: number = 2
 ) {
 	return Intl.NumberFormat("en-NG", {
@@ -31,20 +36,25 @@ export function formatMoney<T extends string>(
 	}).format(value);
 }
 
+/**
+ * Returns the currency code symbol (e.g. `₦`, `$`, `€`, `£`) for a given currency code.
+ * @param currencyCode currency code as string
+ * @returns the currency code symbol (e.g. `₦`, `$`, `€`, `£`)
+ */
 export function getCurrencySymbol(currencyCode: string) {
-  const symbolMap = new Map([
-    ["ngn", "₦"],
-    ["usd", "$"],
-    ["eur", "€"],
-    ["gbp", "£"],
-  ])
-  const code = currencyCode.toLowerCase();
-  if (symbolMap.has(code)) return symbolMap.get(code);
-  return "#";
+	const symbolMap = new Map([
+		["ngn", "₦"],
+		["usd", "$"],
+		["eur", "€"],
+		["gbp", "£"],
+	])
+	const code = currencyCode.toLowerCase();
+	if (symbolMap.has(code)) return symbolMap.get(code);
+	return "#";
 }
 
 /**
- * Throttles a function to run at most once per every 'limit' milliseconds.
+ * Debounces a function to run at most once per every 'limit' milliseconds.
  *
  * @param {Function} func The function to debounce.
  * @param {number} delay The delay in milliseconds before the function is executed.
@@ -109,4 +119,28 @@ export function truncateText(text: string, maxLength: number) {
 export function isPhoneValid(phone: string) {
 	const phoneRegex = /^\+?[0-9]\d{1,14}$/; // E.164 format
 	return phoneRegex.test(phone);
+}
+
+/**
+ * Calculates the worth of a loan including interest and late fees.
+ * @param loan Loan object
+ * @returns The worth of the loan
+ */
+export function calcLoanWorth(loan: LoanT): number {
+	const interestAmount = loan.interest * loan.amount
+	let lateFeeAmount = 0
+	if (loan.status === "overdue") {
+		const daysOverdue = (new Date().getTime() - loan.dueDate.getTime()) / (1000 * 60 * 60 * 24);
+		if (daysOverdue > 0) {
+			const lateFeeTimes = Math.floor(daysOverdue / loan.lateFeeCycle)
+			lateFeeAmount = lateFeeTimes * loan.lateFeeRate * loan.amount
+		}
+	} else if (loan.status === "settled" && loan.settledAt && loan.settledAt > loan.dueDate) {
+		const daysOverdue = (loan.settledAt.getTime() - loan.dueDate.getTime()) / (1000 * 60 * 60 * 24);
+		if (daysOverdue > 0) {
+			const lateFeeTimes = Math.floor(daysOverdue / loan.lateFeeCycle)
+			lateFeeAmount = lateFeeTimes * loan.lateFeeRate * loan.amount
+		}
+	}
+	return loan.amount + interestAmount + lateFeeAmount
 }

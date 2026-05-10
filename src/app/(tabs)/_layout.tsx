@@ -26,7 +26,8 @@ export default function RootLayout() {
 				options={{
 					title: "Debtor",
           tabBarIcon: () => <IonIcons name="person" size={24} color="black" />,
-          headerShown: true
+          headerShown: true,
+          headerTitle: "Debtors"
 				}}
 			/>
 			<Tabs.Screen
