@@ -4,7 +4,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "1",
     debtorId: "1",
-    amount: 1000,
+    amount: 100_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -20,7 +20,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "2",
     debtorId: "2",
-    amount: 2000,
+    amount: 200_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -36,7 +36,7 @@ export const mockLoans: LoanT[] = [
     {
     id: "3",
     debtorId: "10",
-    amount: 1000,
+    amount: 150_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -52,7 +52,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "4",
     debtorId: "2",
-    amount: 2000,
+    amount: 200_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -68,7 +68,7 @@ export const mockLoans: LoanT[] = [
     {
     id: "5",
     debtorId: "1",
-    amount: 1000,
+    amount: 80_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -84,7 +84,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "6",
     debtorId: "12",
-    amount: 2000,
+    amount: 50_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -100,7 +100,7 @@ export const mockLoans: LoanT[] = [
     {
     id: "7",
     debtorId: "13",
-    amount: 1000,
+    amount: 120_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -116,7 +116,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "8",
     debtorId: "14",
-    amount: 2000,
+    amount: 20_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -132,7 +132,7 @@ export const mockLoans: LoanT[] = [
     {
     id: "9",
     debtorId: "15",
-    amount: 1000,
+    amount: 15_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -148,7 +148,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "10",
     debtorId: "2",
-    amount: 2000,
+    amount: 300_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -164,7 +164,7 @@ export const mockLoans: LoanT[] = [
     {
     id: "11",
     debtorId: "5",
-    amount: 1000,
+    amount: 100_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -180,7 +180,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "12",
     debtorId: "8",
-    amount: 2000,
+    amount: 250_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -196,7 +196,7 @@ export const mockLoans: LoanT[] = [
     {
     id: "13",
     debtorId: "11",
-    amount: 1000,
+    amount: 100_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -212,7 +212,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "14",
     debtorId: "4",
-    amount: 2000,
+    amount: 400_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -228,7 +228,7 @@ export const mockLoans: LoanT[] = [
     {
     id: "15",
     debtorId: "7",
-    amount: 1000,
+    amount: 220_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,
@@ -244,7 +244,7 @@ export const mockLoans: LoanT[] = [
   {
     id: "16",
     debtorId: "9",
-    amount: 2000,
+    amount: 90_000_00,
     currency: "NGN",
     /** percentage */
     interest: 0.15,

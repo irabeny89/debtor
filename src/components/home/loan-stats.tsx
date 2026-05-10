@@ -6,7 +6,7 @@ import useSettingData from "@/hooks/use-setting-data";
 import { formatNumber, getCurrencySymbol } from "@/utils";
 
 export default function LoanStats() {
-	const { granted, settled, unsettled } = useLoanStats();
+	const { totalGranted, active, settled, unsettled } = useLoanStats();
 	const { currencyCode } = useSettingData();
 	const currencySymbol = getCurrencySymbol(currencyCode);
 
@@ -31,7 +31,7 @@ export default function LoanStats() {
 							<Text style={styles.mainCardLabel}>Total Granted</Text>
 						</View>
 						<Text style={styles.mainCardValue} adjustsFontSizeToFit numberOfLines={1}>
-							{currencySymbol}{formatNumber(granted)}
+							{currencySymbol}{formatNumber(totalGranted)}
 						</Text>
 					</View>
 				</View>
@@ -56,6 +56,16 @@ export default function LoanStats() {
 						{currencySymbol}{formatNumber(unsettled)}
 					</Text>
 					<Text style={styles.gridLabel}>Unsettled</Text>
+				</View>
+
+				<View style={styles.gridItem}>
+					<View style={[styles.smallIconContainer, { backgroundColor: "#FEF3C7" }]}>
+						<Ionicons name="timer" size={20} color="#D97706" />
+					</View>
+					<Text style={styles.gridValue} adjustsFontSizeToFit numberOfLines={1}>
+						{currencySymbol}{formatNumber(active)}
+					</Text>
+					<Text style={styles.gridLabel}>Active</Text>
 				</View>
 			</View>
 		</View>
