@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, Platform } from "react-native";
 
 export default function AddDebtorScreen() {
@@ -11,11 +11,15 @@ export default function AddDebtorScreen() {
   const [workPlace, setWorkPlace] = useState("");
   const [gender, setGender] = useState<"m" | "f">("m");
 
+  const hasValidInputs = useMemo(() => {
+    return firstName && lastName && phone && workPlace && gender;
+  }, [firstName, lastName, phone, workPlace, gender]);
+
   const handleSave = () => {
     // Basic validation
-    if (!firstName || !lastName || !phone) return;
+    if (!hasValidInputs) return;
 
-    // In a real app, dispatch to store or make API call here
+    // TODO: In a real app, dispatch to store or make API call here
 
     // Go back to the previous screen
     router.back();
@@ -118,9 +122,9 @@ export default function AddDebtorScreen() {
 
       <View style={styles.footer}>
         <TouchableOpacity
-          style={[styles.saveButton, (!firstName || !lastName || !phone) && styles.saveButtonDisabled]}
+          style={[styles.saveButton, (!hasValidInputs) && styles.saveButtonDisabled]}
           onPress={handleSave}
-          disabled={!firstName || !lastName || !phone}
+          disabled={!hasValidInputs}
         >
           <Text style={styles.saveButtonText}>Save Debtor</Text>
         </TouchableOpacity>
