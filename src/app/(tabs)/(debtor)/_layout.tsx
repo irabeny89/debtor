@@ -1,10 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import ScreenHeader from "@/components/screen-header";
 
 export default function DebtorLayout() {
+  const router = useRouter();
+
   return (
     <Stack>
       <Stack.Screen
@@ -13,7 +15,7 @@ export default function DebtorLayout() {
           header: () => (
             <ScreenHeader style={{ justifyContent: "space-between" }}>
               <ScreenHeader.Title title="Debtors" />
-              <TouchableOpacity style={styles.addButton}>
+              <TouchableOpacity style={styles.addButton} onPress={() => router.push("/(tabs)/(debtor)/add")}>
                 <Ionicons name="add" size={24} color="#FFFFFF" />
               </TouchableOpacity>
             </ScreenHeader>
@@ -27,6 +29,17 @@ export default function DebtorLayout() {
             <ScreenHeader>
               <ScreenHeader.BackIcon />
               <ScreenHeader.Title title="Debtor Details" />
+            </ScreenHeader>
+          )
+        }}
+      />
+      <Stack.Screen
+        name="add"
+        options={{
+          header: () => (
+            <ScreenHeader>
+              <ScreenHeader.BackIcon />
+              <ScreenHeader.Title title="Add Debtor" />
             </ScreenHeader>
           )
         }}

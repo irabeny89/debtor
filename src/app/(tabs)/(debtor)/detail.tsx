@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import useDebtor from "@/hooks/use-debtor";
 import useLoanList from "@/hooks/use-loan-list";
 import { calcLoanWorth, formatNumber, getCurrencySymbol } from "@/utils";
@@ -144,7 +144,7 @@ export default function DetailScreen() {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Loan History</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/add")}>
             <Text style={styles.seeAllText}>+ Add Loan</Text>
           </TouchableOpacity>
         </View>
