@@ -17,7 +17,8 @@ export function formatNumber(value: number, maxSigDigit: number = 3) {
 }
 
 /**
- * Formats a number as money (e.g. ₦2,000.00).
+ * Formats a number as money (e.g. ₦2,000.00). 
+ * Note that this function divides the value by 100, so ensure to multiply your input by 100 before passing it to this function.
  *
  * @param value the value to format
  * @param currency currency code (e.g. `NGN`, `USD`, `EUR`, `GBP`)
@@ -33,7 +34,7 @@ export function formatMoney<T extends string>(
 		style: "currency",
 		currency,
 		maximumFractionDigits: maxFracDigit,
-	}).format(value);
+	}).format(value / 100);
 }
 
 /**
@@ -49,7 +50,7 @@ export function getCurrencySymbol(currencyCode: string) {
 		["gbp", "£"],
 	])
 	const code = currencyCode.toLowerCase();
-	if (symbolMap.has(code)) return symbolMap.get(code);
+	if (symbolMap.has(code)) return symbolMap.get(code)!;
 	return "#";
 }
 

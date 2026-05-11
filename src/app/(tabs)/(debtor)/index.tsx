@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import DebtorCard from "@/components/debtor/debtor-card";
 import Tabs, { TabItem } from "@/components/tabs";
 import Pagination from "@/components/pagination";
@@ -7,7 +7,6 @@ import useDebtorList from "@/hooks/use-debtor-list";
 import { DebtorT } from "@/types";
 import usePagination from "@/hooks/use-pagination";
 import SearchInput from "@/components/search-input";
-import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const renderDebtor = ({ item }: { item: DebtorT }) => <DebtorCard data={item} />
