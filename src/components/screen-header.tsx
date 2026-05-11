@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { ReactNode } from "react";
 import { TouchableOpacity, View, Text, StyleSheet, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,11 +18,14 @@ export default function ScreenHeader({ children, style }: Props) {
   );
 }
 
-ScreenHeader.BackIcon = () => (
-  <TouchableOpacity onPress={() => router.back()}>
-    <Ionicons name="arrow-back" size={24} color="#111827" />
-  </TouchableOpacity>
-)
+ScreenHeader.BackIcon = () => {
+  const router = useRouter()
+  return (
+    <TouchableOpacity onPress={() => router.back()}>
+      <Ionicons name="arrow-back" size={24} color="#111827" />
+    </TouchableOpacity>
+  )
+}
 
 ScreenHeader.Title = ({ title }: { title: string }) => (
   <Text style={styles.title}>

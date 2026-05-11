@@ -6,50 +6,15 @@ import { calcLoanWorth, formatNumber, getCurrencySymbol } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import useSettingData from "@/hooks/use-setting-data";
 import { LoanT } from "@/types";
+import DebtorLoan from "@/components/debtor/debtor-loan";
 
 type ParamsT = {
   id: string
 }
 
-const renderLoanHistory = (currencySymbol: string) => (loan: LoanT) => {
-  const loanWorth = calcLoanWorth(loan) / 100;
-  const isOverdue = loan.status === "overdue";
-  const isSettled = loan.status === "settled";
-
-  return (
-    <TouchableOpacity key={loan.id} style={styles.loanItem}>
-      <View style={styles.loanItemLeft}>
-        <View style={[
-          styles.loanIcon,
-          { backgroundColor: isSettled ? "#D1FAE5" : isOverdue ? "#FEE2E2" : "#EEF2FF" }
-        ]}>
-          <Ionicons
-            name={isSettled ? "checkmark-circle" : isOverdue ? "warning" : "time"}
-            size={20}
-            color={isSettled ? "#059669" : isOverdue ? "#DC2626" : "#4F46E5"}
-          />
-        </View>
-        <View>
-          <Text style={styles.loanAmount}>{currencySymbol}{formatNumber(loanWorth)}</Text>
-          <Text style={styles.loanDate}>
-            Due: {new Date(loan.dueDate).toLocaleDateString()}
-          </Text>
-        </View>
-      </View>
-      <View style={[
-        styles.loanStatusBadge,
-        { backgroundColor: isSettled ? "#D1FAE5" : isOverdue ? "#FEE2E2" : "#EEF2FF" }
-      ]}>
-        <Text style={[
-          styles.loanStatusText,
-          { color: isSettled ? "#059669" : isOverdue ? "#DC2626" : "#4F46E5" }
-        ]}>
-          {loan.status.toUpperCase()}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  )
-}
+const renderLoanHistory = (loan: LoanT) => (
+  <DebtorLoan loan={loan} key={loan.id} />
+)
 
 export default function DetailScreen() {
   const { id } = useLocalSearchParams<ParamsT>();
@@ -156,7 +121,7 @@ export default function DetailScreen() {
           </View>
         ) : (
           <View style={styles.loansList}>
-            {debtorLoans.map(renderLoanHistory(currencySymbol))}
+            {debtorLoans.map(renderLoanHistory)}
           </View>
         )}
       </View>

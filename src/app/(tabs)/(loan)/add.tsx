@@ -5,7 +5,27 @@ import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboa
 import useDebtorList from "@/hooks/use-debtor-list";
 import useSettingData from "@/hooks/use-setting-data";
 import { getCurrencySymbol } from "@/utils";
+import { DebtorT } from "@/types";
 
+const renderDebtor = (selectedDebtor: string, setSelectedDebtor: (id: string) => void) => (debtor: DebtorT) => {
+  const isActive = selectedDebtor === debtor.id;
+  return (
+    <TouchableOpacity
+      key={debtor.id}
+      style={[styles.debtorBubble, isActive && styles.debtorBubbleActive]}
+      onPress={() => setSelectedDebtor(debtor.id)}
+    >
+      <View style={[styles.debtorAvatar, isActive && styles.debtorAvatarActive]}>
+        <Text style={[styles.debtorAvatarText, isActive && styles.debtorAvatarTextActive]}>
+          {(debtor.firstName?.[0] || "") + (debtor.lastName?.[0] || "")}
+        </Text>
+      </View>
+      <Text style={[styles.debtorName, isActive && styles.debtorNameActive]}>
+        {debtor.firstName}
+      </Text>
+    </TouchableOpacity>
+  );
+}
 export default function AddLoanScreen() {
   const router = useRouter();
   const debtors = useDebtorList();
@@ -25,43 +45,25 @@ export default function AddLoanScreen() {
 
   const handleSave = () => {
     if (!hasValidInputs) return;
-    
+
     // TODO: Dispatch save action here
-    
+
     router.back();
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
+    <KeyboardAvoidingView
+      style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentContainer}>
-        
+
         {/* Debtor Selection */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Select Debtor</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.debtorList}>
-            {debtors.map(debtor => {
-              const isActive = selectedDebtor === debtor.id;
-              return (
-                <TouchableOpacity 
-                  key={debtor.id} 
-                  style={[styles.debtorBubble, isActive && styles.debtorBubbleActive]}
-                  onPress={() => setSelectedDebtor(debtor.id)}
-                >
-                  <View style={[styles.debtorAvatar, isActive && styles.debtorAvatarActive]}>
-                    <Text style={[styles.debtorAvatarText, isActive && styles.debtorAvatarTextActive]}>
-                      {(debtor.firstName?.[0] || "") + (debtor.lastName?.[0] || "")}
-                    </Text>
-                  </View>
-                  <Text style={[styles.debtorName, isActive && styles.debtorNameActive]}>
-                    {debtor.firstName}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+            {debtors.map(renderDebtor(selectedDebtor, setSelectedDebtor))}
           </ScrollView>
         </View>
 
@@ -141,8 +143,8 @@ export default function AddLoanScreen() {
                 <Text style={styles.settingSubtitle}>Send alerts when due date approaches</Text>
               </View>
             </View>
-            <Switch 
-              value={notify} 
+            <Switch
+              value={notify}
               onValueChange={setNotify}
               trackColor={{ false: "#E5E7EB", true: "#4F46E5" }}
               thumbColor="#FFFFFF"
@@ -152,8 +154,8 @@ export default function AddLoanScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity 
-          style={[styles.saveButton, (!hasValidInputs) && styles.saveButtonDisabled]} 
+        <TouchableOpacity
+          style={[styles.saveButton, (!hasValidInputs) && styles.saveButtonDisabled]}
           onPress={handleSave}
           disabled={!hasValidInputs}
         >
