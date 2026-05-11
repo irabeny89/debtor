@@ -8,6 +8,7 @@ import { DebtorT } from "@/types";
 import usePagination from "@/hooks/use-pagination";
 import SearchInput from "@/components/search-input";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 
 const renderDebtor = ({ item }: { item: DebtorT }) => <DebtorCard data={item} />
 
@@ -51,24 +52,25 @@ export default function DebtorScreen() {
 				onChange={setSearch}
 				text={search}
 			/>
+			<Tabs>
+				<TabItem label="All" onPress={() => setActiveTab("All")} isActive={activeTab === "All"} />
+				<TabItem label="Active" onPress={() => setActiveTab("Active")} isActive={activeTab === "Active"} />
+				<TabItem label="Inactive" onPress={() => setActiveTab("Inactive")} isActive={activeTab === "Inactive"} />
+				<TabItem label="Suspended" onPress={() => setActiveTab("Suspended")} isActive={activeTab === "Suspended"} />
+			</Tabs>
 			{!filteredDebtors.length ? (
-				<Text style={styles.noItemText}>You have not added any debtor</Text>
-			) : (
-				<View style={{ flex: 1 }}>
-					<Tabs>
-						<TabItem label="All" onPress={() => setActiveTab("All")} isActive={activeTab === "All"} />
-						<TabItem label="Active" onPress={() => setActiveTab("Active")} isActive={activeTab === "Active"} />
-						<TabItem label="Inactive" onPress={() => setActiveTab("Inactive")} isActive={activeTab === "Inactive"} />
-						<TabItem label="Suspended" onPress={() => setActiveTab("Suspended")} isActive={activeTab === "Suspended"} />
-					</Tabs>
-					<FlatList
-						data={paginatedData}
-						renderItem={renderDebtor}
-						keyExtractor={item => item.id}
-						contentContainerStyle={styles.listContainer}
-						ListFooterComponent={<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
-					/>
+				<View style={styles.emptyState}>
+					<Ionicons name="people-outline" size={64} color="#D1D5DB" />
+					<Text style={styles.emptyStateText}>No loans found</Text>
 				</View>
+			) : (
+				<FlatList
+					data={paginatedData}
+					renderItem={renderDebtor}
+					keyExtractor={item => item.id}
+					contentContainerStyle={styles.listContainer}
+					ListFooterComponent={<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
+				/>
 			)}
 		</SafeAreaView>
 	);
@@ -76,16 +78,23 @@ export default function DebtorScreen() {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		paddingHorizontal: 10,
 		paddingVertical: 20,
+		paddingBottom: 200
 	},
-	noItemText: {
-		marginTop: "60%",
-		marginLeft: "25%",
+	emptyState: {
+		justifyContent: "center",
+		alignItems: "center",
+		paddingTop: "50%",
+	},
+	emptyStateText: {
+		marginTop: 16,
+		fontSize: 16,
+		color: "#6B7280",
+		fontWeight: "500",
 	},
 	listContainer: {
-		gap: 15,
+		gap: 10,
 		marginTop: 20,
 		paddingBottom: 130,
 	},

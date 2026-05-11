@@ -57,7 +57,7 @@ export default function DetailScreen() {
   const loans = useLoanList();
   const debtorLoans = loans.filter(loan => loan.debtorId === id);
   const { currencyCode } = useSettingData();
-  const currencySymbol = getCurrencySymbol(currencyCode);
+  const currencySymbol = getCurrencySymbol(debtorLoans[0]?.currency || currencyCode);
 
   if (!debtor) {
     return (

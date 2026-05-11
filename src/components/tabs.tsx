@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 	tabsContainer: {
 		flexDirection: "row",
 		gap: 20,
-		paddingBottom: 5,
+		paddingBottom: 20,
 		paddingLeft: 10,
 		marginTop: 30,
 	},
