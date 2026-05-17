@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LoanT } from "@/types";
 import { calcLoanWorth, formatNumber, getCurrencySymbol } from "@/utils";
 import React from "react";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 
 type Props = {

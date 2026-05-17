@@ -13,8 +13,8 @@ type ParamsT = {
 export default function LoanDetailScreen() {
   const { id } = useLocalSearchParams<ParamsT>();
   const router = useRouter();
-  const loan = useLoan(id);
-  const debtor = useDebtor(loan?.debtorId || "");
+  const loan = useLoan(+id);
+  const debtor = useDebtor(loan?.debtorId || 0);
 
   if (!loan || !debtor) {
     return (

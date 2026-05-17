@@ -7,7 +7,7 @@ import { getCurrencySymbol } from "@/utils";
 import { DebtorT } from "@/types";
 
 export type LoanFormData = {
-  selectedDebtor: string;
+  selectedDebtor: number;
   amount: string;
   interest: string;
   duration: string;
@@ -22,7 +22,7 @@ type LoanFormProps = {
   updatedAt?: Date;
 };
 
-const renderDebtor = (selectedDebtor: string, setSelectedDebtor: (id: string) => void) => (debtor: DebtorT) => {
+const renderDebtor = (selectedDebtor: number, setSelectedDebtor: (id: number) => void) => (debtor: DebtorT) => {
   const isActive = selectedDebtor === debtor.id;
   return (
     <TouchableOpacity
@@ -52,7 +52,7 @@ export default function LoanForm({
   const { currencyCode } = useSettingData();
   const currencySymbol = getCurrencySymbol(currencyCode);
 
-  const [selectedDebtor, setSelectedDebtor] = useState(initialValues?.selectedDebtor || "");
+  const [selectedDebtor, setSelectedDebtor] = useState(initialValues?.selectedDebtor || 0);
   const [amount, setAmount] = useState(initialValues?.amount || "");
   const [interest, setInterest] = useState(initialValues?.interest || "");
   const [duration, setDuration] = useState(initialValues?.duration || "");

@@ -7,8 +7,6 @@ import Pagination from "@/components/pagination";
 import useLoanList from "@/hooks/use-loan-list";
 import useDebtorList from "@/hooks/use-debtor-list";
 import usePagination from "@/hooks/use-pagination";
-import { getCurrencySymbol } from "@/utils";
-import useSettingData from "@/hooks/use-setting-data";
 import { LoanT } from "@/types";
 import LoanCard from "@/components/loan/loan-card";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,7 +17,7 @@ export default function LoanScreen() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("All");
 
-  const getDebtorName = (debtorId: string) => {
+  const getDebtorName = (debtorId: number) => {
     const debtor = debtors.find(d => d.id === debtorId);
     return debtor ? `${debtor.firstName} ${debtor.lastName}` : "Unknown Debtor";
   };
@@ -77,7 +75,7 @@ export default function LoanScreen() {
         <FlatList
           data={paginatedData}
           renderItem={renderLoanItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}

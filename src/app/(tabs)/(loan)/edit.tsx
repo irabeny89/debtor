@@ -7,12 +7,12 @@ import LoanForm, { LoanFormData } from "@/components/loan/loan-form";
 export default function EditLoanScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const loan = useLoan(id);
+  const loan = useLoan(+id);
 
   const handleSave = (data: LoanFormData) => {
     // TODO: Dispatch save action here
     if (loan) {
-      const index = mockLoans.findIndex(l => l.id === id);
+      const index = mockLoans.findIndex(l => l.id === loan.id);
       if (index !== -1) {
         mockLoans[index] = {
           ...mockLoans[index],
