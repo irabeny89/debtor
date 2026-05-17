@@ -49,9 +49,10 @@ export default function RootLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="setting"
+				name="(setting)"
 				options={{
 					title: "Settings",
+					headerShown: false,
 					tabBarIcon: ({ focused, color }) => (
 						<View style={[styles.iconWrapper, focused && styles.activeIconWrapper]}>
 							<IonIcons name={focused ? "settings" : "settings-outline"} size={22} color={color} />
