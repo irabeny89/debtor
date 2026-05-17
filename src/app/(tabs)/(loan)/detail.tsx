@@ -139,7 +139,10 @@ export default function LoanDetailScreen() {
           </TouchableOpacity>
         )}
         
-        <TouchableOpacity style={styles.secondaryAction}>
+        <TouchableOpacity 
+          style={styles.secondaryAction}
+          onPress={() => router.push(`/(tabs)/(loan)/edit?id=${id}`)}
+        >
           <Ionicons name="pencil" size={20} color="#4B5563" />
           <Text style={styles.secondaryActionText}>Edit Loan Details</Text>
         </TouchableOpacity>

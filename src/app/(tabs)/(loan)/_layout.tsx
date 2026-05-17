@@ -44,6 +44,17 @@ export default function LoanLayout() {
           )
         }}
       />
+      <Stack.Screen
+        name="edit"
+        options={{
+          header: () => (
+            <ScreenHeader>
+              <ScreenHeader.BackIcon />
+              <ScreenHeader.Title title="Edit Loan" />
+            </ScreenHeader>
+          )
+        }}
+      />
     </Stack>
   )
 }
