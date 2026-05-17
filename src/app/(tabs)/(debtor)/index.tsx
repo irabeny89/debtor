@@ -67,7 +67,7 @@ export default function DebtorScreen() {
 				<FlatList
 					data={paginatedData}
 					renderItem={renderDebtor}
-					keyExtractor={item => item.id}
+					keyExtractor={item => item.id.toString()}
 					contentContainerStyle={styles.listContainer}
 					ListFooterComponent={<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
 				/>

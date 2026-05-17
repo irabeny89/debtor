@@ -2,8 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
+import { useDatabase } from "@/context/database-context";
 import { DebtorT, LoanT } from "@/types";
-import { mockDebtors } from "@/data/debtor";
 import DebtorLoan from "./debtor-loan";
 
 type Props = {
@@ -13,6 +13,8 @@ type Props = {
 }
 
 export default function LoanHistory({ debtorId, debtor, debtorLoans }: Props) {
+  const { deleteDebtor } = useDatabase();
+
   const renderLoanHistory = (loan: LoanT) => (
     <DebtorLoan loan={loan} key={loan.id} />
   )
@@ -27,10 +29,7 @@ export default function LoanHistory({ debtorId, debtor, debtorLoans }: Props) {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            const index = mockDebtors.findIndex(d => d.id === debtorId);
-            if (index !== -1) {
-              mockDebtors.splice(index, 1);
-            }
+            deleteDebtor(debtorId);
             router.back();
           }
         }

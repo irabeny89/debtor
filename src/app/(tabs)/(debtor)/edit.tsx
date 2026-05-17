@@ -1,24 +1,18 @@
 import { useRouter, useLocalSearchParams } from "expo-router";
 import useDebtor from "@/hooks/use-debtor";
-import { mockDebtors } from "@/data/debtor";
 import DebtorForm, { DebtorFormData } from "@/components/debtor/debtor-form";
+import { useDatabase } from "@/context/database-context";
 
 export default function EditDebtorScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const debtor = useDebtor(id);
+  const debtorId = Number(id);
+  const debtor = useDebtor(debtorId);
+  const { updateDebtor } = useDatabase();
 
   const handleSave = (data: DebtorFormData) => {
-    // TODO: In a real app, dispatch to store or make API call here
     if (debtor) {
-      const index = mockDebtors.findIndex(d => d.id === id);
-      if (index !== -1) {
-        mockDebtors[index] = {
-          ...mockDebtors[index],
-          ...data,
-          updatedAt: new Date(),
-        };
-      }
+      updateDebtor(debtorId, data);
     }
 
     // Go back to the previous screen

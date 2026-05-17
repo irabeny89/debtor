@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useDatabase } from "@/context/database-context";
 import { mockDebtors } from "@/data/debtor";
 import { mockLoans } from "@/data/loan";
 
@@ -18,6 +19,7 @@ export default function SettingsScreen() {
   const [isBackingUp, setIsBackingUp] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [lastBackup, setLastBackup] = useState<string>("Never");
+  const { debtors, loans, restoreDatabase } = useDatabase();
 
   const handleBackup = async () => {
     setIsBackingUp(true);
@@ -25,8 +27,8 @@ export default function SettingsScreen() {
     setTimeout(async () => {
       setIsBackingUp(false);
       const backupData = {
-        debtors: mockDebtors,
-        loans: mockLoans,
+        debtors: debtors,
+        loans: loans,
         backedUpAt: new Date().toISOString(),
       };
       
@@ -60,7 +62,7 @@ export default function SettingsScreen() {
   const handleRestore = () => {
     Alert.alert(
       "Restore Data",
-      "Are you sure you want to restore your data? This will overwrite any current unsaved changes with the last cloud backup.",
+      "Are you sure you want to restore your data? This will overwrite any current database changes and revert to the default template data.",
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -70,11 +72,18 @@ export default function SettingsScreen() {
             setIsRestoring(true);
             // Simulate restoring data latency
             setTimeout(() => {
-              setIsRestoring(false);
-              Alert.alert(
-                "Restore Successful",
-                "Data has been successfully restored to the last saved backup state."
-              );
+              try {
+                restoreDatabase(mockDebtors, mockLoans);
+                setIsRestoring(false);
+                Alert.alert(
+                  "Restore Successful",
+                  "Data has been successfully restored to the initial template state."
+                );
+              } catch (error) {
+                setIsRestoring(false);
+                Alert.alert("Restore Failed", "An error occurred while restoring data.");
+                console.error(error);
+              }
             }, 2000);
           },
         },

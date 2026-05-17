@@ -1,7 +1,7 @@
-import { mockDebtors } from "@/data/debtor";
+import { useDatabase } from "@/context/database-context";
 import { DebtorT } from "@/types";
 
 export default function useDebtorList(): DebtorT[] {
-  const debtors = mockDebtors
-  return debtors
+  const { debtors } = useDatabase();
+  return debtors;
 }

@@ -1,11 +1,16 @@
 import { useRouter } from "expo-router";
 import DebtorForm, { DebtorFormData } from "@/components/debtor/debtor-form";
+import { useDatabase } from "@/context/database-context";
 
 export default function AddDebtorScreen() {
   const router = useRouter();
+  const { addDebtor } = useDatabase();
 
   const handleSave = (data: DebtorFormData) => {
-    // TODO: In a real app, dispatch to store or make API call here
+    addDebtor({
+      ...data,
+      status: "Inactive",
+    });
 
     // Go back to the previous screen
     router.back();
