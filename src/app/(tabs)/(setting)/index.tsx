@@ -18,8 +18,10 @@ import { mockLoans } from "@/data/loan";
 export default function SettingsScreen() {
   const [isBackingUp, setIsBackingUp] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
   const [lastBackup, setLastBackup] = useState<string>("Never");
-  const { debtors, loans, restoreDatabase } = useDatabase();
+  const { debtors, loans, restoreDatabase, clearDatabase, seedDatabase } = useDatabase();
 
   const handleBackup = async () => {
     setIsBackingUp(true);
@@ -91,6 +93,62 @@ export default function SettingsScreen() {
     );
   };
 
+  const handleClear = () => {
+    Alert.alert(
+      "Clear Database",
+      "Are you sure you want to delete ALL debtors and loans from your SQLite database? This action is irreversible.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear All",
+          style: "destructive",
+          onPress: () => {
+            setIsClearing(true);
+            setTimeout(() => {
+              try {
+                clearDatabase();
+                setIsClearing(false);
+                Alert.alert("Success", "All database tables have been cleared completely.");
+              } catch (error) {
+                setIsClearing(false);
+                Alert.alert("Error", "Failed to clear database.");
+                console.error(error);
+              }
+            }, 1000);
+          },
+        },
+      ]
+    );
+  };
+
+  const handleSeed = () => {
+    Alert.alert(
+      "Load Mock Data",
+      "This will replace all your current data with the default mock debtors and loans. Proceed?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Load Mocks",
+          style: "default",
+          onPress: () => {
+            setIsSeeding(true);
+            setTimeout(() => {
+              try {
+                seedDatabase();
+                setIsSeeding(false);
+                Alert.alert("Success", "Database seeded with original mock data successfully!");
+              } catch (error) {
+                setIsSeeding(false);
+                Alert.alert("Error", "Failed to seed database.");
+                console.error(error);
+              }
+            }, 1000);
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -122,7 +180,7 @@ export default function SettingsScreen() {
             <TouchableOpacity 
               style={[styles.actionButton, styles.backupButton]} 
               onPress={handleBackup}
-              disabled={isBackingUp || isRestoring}
+              disabled={isBackingUp || isRestoring || isClearing || isSeeding}
             >
               {isBackingUp ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
@@ -137,7 +195,7 @@ export default function SettingsScreen() {
             <TouchableOpacity 
               style={[styles.actionButton, styles.restoreButton]} 
               onPress={handleRestore}
-              disabled={isBackingUp || isRestoring}
+              disabled={isBackingUp || isRestoring || isClearing || isSeeding}
             >
               {isRestoring ? (
                 <ActivityIndicator size="small" color="#4F46E5" />
@@ -145,6 +203,38 @@ export default function SettingsScreen() {
                 <>
                   <Ionicons name="cloud-download-outline" size={20} color="#4F46E5" style={styles.buttonIcon} />
                   <Text style={styles.restoreText}>Restore Data</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          <View style={[styles.actionsContainer, { marginTop: 12 }]}>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.seedButton]} 
+              onPress={handleSeed}
+              disabled={isBackingUp || isRestoring || isClearing || isSeeding}
+            >
+              {isSeeding ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <>
+                  <Ionicons name="people" size={20} color="#FFFFFF" style={styles.buttonIcon} />
+                  <Text style={styles.buttonText}>Load Mock Data</Text>
+                </>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.clearButton]} 
+              onPress={handleClear}
+              disabled={isBackingUp || isRestoring || isClearing || isSeeding}
+            >
+              {isClearing ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <>
+                  <Ionicons name="trash-outline" size={20} color="#FFFFFF" style={styles.buttonIcon} />
+                  <Text style={styles.buttonText}>Clear All Data</Text>
                 </>
               )}
             </TouchableOpacity>
@@ -336,6 +426,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderWidth: 1.5,
     borderColor: "#EEF2FF",
+  },
+  seedButton: {
+    backgroundColor: "#10B981",
+  },
+  clearButton: {
+    backgroundColor: "#EF4444",
   },
   buttonIcon: {
     marginRight: 8,

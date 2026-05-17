@@ -9,8 +9,11 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
+    "type:check": "bunx tsc --noEmit",
     "eas-conf": "eas build:configure",
-    "eas-build:android-dev": "eas build --platform android --profile development"
+    "eas-build:android-dev": "eas build --platform android --profile development",
+    "db:clear": "adb shell pm clear host.exp.exponent",
+    "db:reset": "bun run db:clear && bun run start"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.16.1",

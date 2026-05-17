@@ -324,3 +324,13 @@ export function restoreDb(debtors: DebtorT[], loans: LoanT[]): void {
     );
   }
 }
+
+export function clearDb(): void {
+  const database = getDbConnection();
+  database.runSync("DELETE FROM loans;");
+  database.runSync("DELETE FROM debtors;");
+}
+
+export function seedDb(): void {
+  restoreDb(mockDebtors, mockLoans);
+}

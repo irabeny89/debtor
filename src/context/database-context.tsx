@@ -11,6 +11,8 @@ import {
   updateLoanInDb,
   deleteLoanFromDb,
   restoreDb,
+  clearDb,
+  seedDb,
 } from "@/utils/db";
 
 type DatabaseContextT = {
@@ -24,6 +26,8 @@ type DatabaseContextT = {
   deleteLoan: (id: number) => void;
   refreshData: () => void;
   restoreDatabase: (debtors: any[], loans: any[]) => void;
+  clearDatabase: () => void;
+  seedDatabase: () => void;
 };
 
 const DatabaseContext = createContext<DatabaseContextT | undefined>(undefined);
@@ -92,6 +96,16 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
     refreshData();
   };
 
+  const clearDatabase = () => {
+    clearDb();
+    refreshData();
+  };
+
+  const seedDatabase = () => {
+    seedDb();
+    refreshData();
+  };
+
   if (!isReady) {
     return null; // Or a splash screen
   }
@@ -109,6 +123,8 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
         deleteLoan,
         refreshData,
         restoreDatabase,
+        clearDatabase,
+        seedDatabase,
       }}
     >
       {children}
