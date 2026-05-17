@@ -27,7 +27,7 @@ export default function LoanLayout() {
         options={{
           header: () => (
             <ScreenHeader>
-              <ScreenHeader.BackIcon />
+              <ScreenHeader.BackIcon href="/(tabs)/(loan)" />
               <ScreenHeader.Title title="Loan Details" />
             </ScreenHeader>
           )

@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { ExternalPathString, Href, RelativePathString, useRouter } from "expo-router";
 import React, { ReactNode } from "react";
 import { TouchableOpacity, View, Text, StyleSheet, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,10 +18,11 @@ export default function ScreenHeader({ children, style }: Props) {
   );
 }
 
-ScreenHeader.BackIcon = () => {
+ScreenHeader.BackIcon = ({ href }: { href?: Href }) => {
   const router = useRouter()
+  const goBack = () => href ? router.push(href) : router.back();
   return (
-    <TouchableOpacity onPress={() => router.back()}>
+    <TouchableOpacity onPress={goBack}>
       <Ionicons name="arrow-back" size={24} color="#111827" />
     </TouchableOpacity>
   )
