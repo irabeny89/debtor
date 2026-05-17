@@ -1,5 +1,5 @@
 import { LoanT } from "@/types";
-import { calcLoanWorth, formatNumber } from "@/utils";
+import { calcLoanWorth, formatNumber, getCurrencySymbol } from "@/utils";
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,6 +13,7 @@ export default function DebtorLoan({ loan }: Props) {
   const loanWorth = calcLoanWorth(loan) / 100;
   const isOverdue = loan.status === "overdue";
   const isSettled = loan.status === "settled";
+  const currencySymbol = getCurrencySymbol(loan.currency);
 
   return (
     <TouchableOpacity key={loan.id} style={styles.loanItem} onPress={() => router.push({ pathname: "/(tabs)/(loan)/detail", params: { id: loan.id } })}>
@@ -28,7 +29,7 @@ export default function DebtorLoan({ loan }: Props) {
           />
         </View>
         <View>
-          <Text style={styles.loanAmount}>{loan.currency}{formatNumber(loanWorth)}</Text>
+          <Text style={styles.loanAmount}>{currencySymbol}{formatNumber(loanWorth)}</Text>
           <Text style={styles.loanDate}>
             Due: {new Date(loan.dueDate).toLocaleDateString()}
           </Text>

@@ -36,7 +36,7 @@ export type CurrencyCodeT<T extends string> =
 	: never;
 
 export type DebtorT = {
-	id: string;
+	id: number;
 	firstName: string;
 	lastName: string;
 	gender: "m" | "f"
@@ -51,7 +51,7 @@ export type DebtorT = {
 };
 
 export type LoanT = {
-	id: string;
+	id: number;
 	debtorId: DebtorT["id"];
 	amount: number;
 	currency: CurrencyCodeT<"NGN">;

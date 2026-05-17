@@ -2,7 +2,7 @@ import { DebtorT } from "@/types";
 
 export const mockDebtors: DebtorT[] = [
   {
-    id: "1",
+    id: 1,
     firstName: "John",
     lastName: "Doe",
     gender: "m",
@@ -13,7 +13,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "2",
+    id: 2,
     firstName: "Jane",
     lastName: "Doe",
     gender: "f",
@@ -24,7 +24,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "3",
+    id: 3,
     firstName: "Bob",
     lastName: "Doe",
     gender: "m",
@@ -35,7 +35,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "4",
+    id: 4,
     firstName: "Jack",
     lastName: "Olamide",
     gender: "m",
@@ -46,7 +46,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "5",
+    id: 5,
     firstName: "Tom",
     lastName: "Riddle",
     gender: "m",
@@ -57,7 +57,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "6",
+    id: 6,
     firstName: "Morgan",
     lastName: "Feyenoord",
     gender: "m",
@@ -68,7 +68,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "7",
+    id: 7,
     firstName: "Carter",
     lastName: "Spiro",
     gender: "m",
@@ -79,7 +79,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "8",
+    id: 8,
     firstName: "Chinedu",
     lastName: "Ike",
     gender: "m",
@@ -90,7 +90,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "9",
+    id: 9,
     firstName: "Tunde",
     lastName: "Kuti",
     gender: "m",
@@ -101,7 +101,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "10",
+    id: 10,
     firstName: "Femi",
     lastName: "Abdul",
     gender: "m",
@@ -112,7 +112,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "11",
+    id: 11,
     firstName: "Isaac",
     lastName: "Feyenoord",
     gender: "m",
@@ -123,7 +123,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "12",
+    id: 12,
     firstName: "Ayo",
     lastName: "Makun",
     gender: "f",
@@ -134,7 +134,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "13",
+    id: 13,
     firstName: "Alex",
     lastName: "Adekunle",
     gender: "m",
@@ -145,7 +145,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "14",
+    id: 14,
     firstName: "Funmilayo",
     lastName: "Rashaad",
     gender: "f",
@@ -156,7 +156,7 @@ export const mockDebtors: DebtorT[] = [
     updatedAt: new Date(),
   },
   {
-    id: "15",
+    id: 15,
     firstName: "Barbara",
     lastName: "Edo",
     gender: "f",
