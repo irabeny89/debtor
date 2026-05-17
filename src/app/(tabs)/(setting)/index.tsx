@@ -7,13 +7,17 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
-  Share,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useDatabase } from "@/context/database-context";
-import { mockDebtors } from "@/data/debtor";
-import { mockLoans } from "@/data/loan";
+import {
+  documentDirectory,
+  writeAsStringAsync,
+  readAsStringAsync,
+  EncodingType,
+} from "expo-file-system/legacy";
+import * as Sharing from "expo-sharing";
 import {
   exportDataToJson,
   exportDebtorsToCsvFile,
@@ -27,11 +31,11 @@ export default function SettingsScreen() {
   const [isClearing, setIsClearing] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
   const [lastBackup, setLastBackup] = useState<string>("Never");
-  const { 
-    debtors, 
-    loans, 
-    restoreDatabase, 
-    clearDatabase, 
+  const {
+    debtors,
+    loans,
+    restoreDatabase,
+    clearDatabase,
     seedDatabase,
     importDebtors,
     importLoans
@@ -39,46 +43,56 @@ export default function SettingsScreen() {
 
   const handleBackup = async () => {
     setIsBackingUp(true);
-    // Simulate cloud backup latency
     setTimeout(async () => {
-      setIsBackingUp(false);
-      const backupData = {
-        debtors: debtors,
-        loans: loans,
-        backedUpAt: new Date().toISOString(),
-      };
-      
-      const dateString = new Date().toLocaleDateString();
-      const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      setLastBackup(`${dateString} at ${timeString}`);
+      try {
+        const backupData = {
+          debtors: debtors,
+          loans: loans,
+          backedUpAt: new Date().toISOString(),
+        };
+        const fileUri = `${documentDirectory}local_backup.json`;
+        await writeAsStringAsync(fileUri, JSON.stringify(backupData, null, 2), {
+          encoding: EncodingType.UTF8,
+        });
 
-      Alert.alert(
-        "Backup Successful",
-        "Your debtors, loans, and settings have been safely backed up to the secure cloud storage.",
-        [
-          {
-            text: "Share Backup",
-            onPress: async () => {
-              try {
-                await Share.share({
-                  message: JSON.stringify(backupData, null, 2),
-                  title: "DebtorApp Backup Data",
-                });
-              } catch (error) {
-                console.log("Error sharing backup", error);
-              }
+        const dateString = new Date().toLocaleDateString();
+        const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        setLastBackup(`${dateString} at ${timeString}`);
+        setIsBackingUp(false);
+
+        Alert.alert(
+          "Backup Successful",
+          "Your data has been successfully saved to your local device storage.",
+          [
+            {
+              text: "Share File",
+              onPress: async () => {
+                try {
+                  if (await Sharing.isAvailableAsync()) {
+                    await Sharing.shareAsync(fileUri, { mimeType: "application/json", dialogTitle: "Share Local Backup" });
+                  } else {
+                    Alert.alert("Error", "Sharing is not available.");
+                  }
+                } catch (error) {
+                  console.log("Error sharing local backup", error);
+                }
+              },
             },
-          },
-          { text: "OK", style: "default" },
-        ]
-      );
-    }, 2000);
+            { text: "OK", style: "default" },
+          ]
+        );
+      } catch (error) {
+        setIsBackingUp(false);
+        Alert.alert("Backup Failed", "Failed to write local backup file.");
+        console.error(error);
+      }
+    }, 1000);
   };
 
   const handleRestore = () => {
     Alert.alert(
       "Restore Data",
-      "Are you sure you want to restore your data? This will overwrite any current database changes and revert to the default template data.",
+      "Are you sure you want to restore your data? This will overwrite your current database with your last local backup.",
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -86,21 +100,47 @@ export default function SettingsScreen() {
           style: "destructive",
           onPress: () => {
             setIsRestoring(true);
-            // Simulate restoring data latency
-            setTimeout(() => {
+            setTimeout(async () => {
               try {
-                restoreDatabase(mockDebtors, mockLoans);
-                setIsRestoring(false);
-                Alert.alert(
-                  "Restore Successful",
-                  "Data has been successfully restored to the initial template state."
-                );
+                const fileUri = `${documentDirectory}local_backup.json`;
+                const fileContent = await readAsStringAsync(fileUri, {
+                  encoding: EncodingType.UTF8,
+                });
+                const parsed = JSON.parse(fileContent);
+
+                if (Array.isArray(parsed.debtors) && Array.isArray(parsed.loans)) {
+                  // Map dates back to Date objects
+                  const parsedDebtors = parsed.debtors.map((d: any) => ({
+                    ...d,
+                    createdAt: new Date(d.createdAt),
+                    updatedAt: new Date(d.updatedAt),
+                  }));
+                  const parsedLoans = parsed.loans.map((l: any) => ({
+                    ...l,
+                    dueDate: new Date(l.dueDate),
+                    settledAt: l.settledAt ? new Date(l.settledAt) : undefined,
+                    createdAt: new Date(l.createdAt),
+                    updatedAt: new Date(l.updatedAt),
+                  }));
+
+                  restoreDatabase(parsedDebtors, parsedLoans);
+                  setIsRestoring(false);
+                  Alert.alert(
+                    "Restore Successful",
+                    "Data has been successfully restored from your local backup."
+                  );
+                } else {
+                  setIsRestoring(false);
+                  Alert.alert("Restore Failed", "Backup file format is invalid.");
+                }
               } catch (error) {
                 setIsRestoring(false);
-                Alert.alert("Restore Failed", "An error occurred while restoring data.");
-                console.error(error);
+                Alert.alert(
+                  "No Backup Found",
+                  "Could not find a local backup file on this device. Please create a backup first."
+                );
               }
-            }, 2000);
+            }, 1500);
           },
         },
       ]
@@ -261,33 +301,33 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        
+
         {/* Backup & Restore Section */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Data Management</Text>
-          
+
           <View style={styles.cloudCard}>
             <View style={styles.cloudHeader}>
               <View style={styles.cloudIconContainer}>
-                <Ionicons name="cloud-done-outline" size={32} color="#4F46E5" />
+                <Ionicons name="save-outline" size={32} color="#4F46E5" />
               </View>
               <View style={styles.cloudInfo}>
-                <Text style={styles.cloudTitle}>Cloud Synchronization</Text>
-                <Text style={styles.cloudSubtitle}>Securely backup and restore all your records</Text>
+                <Text style={styles.cloudTitle}>Local Backup & Restore</Text>
+                <Text style={styles.cloudSubtitle}>Save and restore your records directly on your device</Text>
               </View>
             </View>
-            
+
             <View style={styles.divider} />
-            
+
             <View style={styles.backupMetaRow}>
-              <Text style={styles.metaLabel}>Last Backup Status</Text>
+              <Text style={styles.metaLabel}>Last Local Backup</Text>
               <Text style={styles.metaValue}>{lastBackup}</Text>
             </View>
           </View>
 
           <View style={styles.actionsContainer}>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.backupButton]} 
+            <TouchableOpacity
+              style={[styles.actionButton, styles.backupButton]}
               onPress={handleBackup}
               disabled={isBackingUp || isRestoring || isClearing || isSeeding}
             >
@@ -301,8 +341,8 @@ export default function SettingsScreen() {
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.restoreButton]} 
+            <TouchableOpacity
+              style={[styles.actionButton, styles.restoreButton]}
               onPress={handleRestore}
               disabled={isBackingUp || isRestoring || isClearing || isSeeding}
             >
@@ -318,8 +358,8 @@ export default function SettingsScreen() {
           </View>
 
           <View style={[styles.actionsContainer, { marginTop: 12 }]}>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.seedButton]} 
+            <TouchableOpacity
+              style={[styles.actionButton, styles.seedButton]}
               onPress={handleSeed}
               disabled={isBackingUp || isRestoring || isClearing || isSeeding}
             >
@@ -333,8 +373,8 @@ export default function SettingsScreen() {
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.clearButton]} 
+            <TouchableOpacity
+              style={[styles.actionButton, styles.clearButton]}
               onPress={handleClear}
               disabled={isBackingUp || isRestoring || isClearing || isSeeding}
             >
@@ -353,7 +393,7 @@ export default function SettingsScreen() {
         {/* File Exchange Section */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>File Import & Export</Text>
-          
+
           <View style={styles.cloudCard}>
             <View style={styles.cloudHeader}>
               <View style={[styles.cloudIconContainer, { backgroundColor: "#F3F4F6" }]}>
@@ -369,24 +409,24 @@ export default function SettingsScreen() {
           {/* Export Actions */}
           <Text style={styles.subHeader}>Export Data</Text>
           <View style={styles.actionsContainer}>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.exportJsonButton]} 
+            <TouchableOpacity
+              style={[styles.actionButton, styles.exportJsonButton]}
               onPress={handleExportJson}
             >
               <Ionicons name="share-social-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
               <Text style={styles.buttonText}>JSON Backup</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.exportCsvButton]} 
+            <TouchableOpacity
+              style={[styles.actionButton, styles.exportCsvButton]}
               onPress={handleExportDebtorsCsv}
             >
               <Ionicons name="people-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
               <Text style={styles.buttonText}>Debtors CSV</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.exportCsvButton]} 
+            <TouchableOpacity
+              style={[styles.actionButton, styles.exportCsvButton]}
               onPress={handleExportLoansCsv}
             >
               <Ionicons name="wallet-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
@@ -396,8 +436,8 @@ export default function SettingsScreen() {
 
           {/* Import Action */}
           <Text style={styles.subHeader}>Import Data</Text>
-          <TouchableOpacity 
-            style={styles.importFileButton} 
+          <TouchableOpacity
+            style={styles.importFileButton}
             onPress={handleImportFile}
           >
             <Ionicons name="document-attach-outline" size={20} color="#4F46E5" style={styles.buttonIcon} />
@@ -408,7 +448,7 @@ export default function SettingsScreen() {
         {/* General Settings */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>General Settings</Text>
-          
+
           <TouchableOpacity style={styles.settingRow}>
             <View style={styles.settingLeft}>
               <View style={[styles.iconBox, { backgroundColor: "#EEF2FF" }]}>
@@ -451,7 +491,7 @@ export default function SettingsScreen() {
         {/* Support Section */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Support</Text>
-          
+
           <TouchableOpacity style={styles.settingRow}>
             <View style={styles.settingLeft}>
               <View style={[styles.iconBox, { backgroundColor: "#FFFBEB" }]}>
