@@ -1,13 +1,17 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 export default function Support() {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionHeader}>Support</Text>
 
-      <TouchableOpacity style={styles.settingRow}>
+      <TouchableOpacity
+        style={styles.settingRow}
+        onPress={() => router.push("/(tabs)/(setting)/help")}
+      >
         <View style={styles.settingLeft}>
           <View style={[styles.iconBox, { backgroundColor: "#FFFBEB" }]}>
             <Ionicons name="help-circle-outline" size={20} color="#F59E0B" />

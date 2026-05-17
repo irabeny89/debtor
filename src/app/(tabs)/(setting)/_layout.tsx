@@ -26,6 +26,17 @@ export default function SettingLayout() {
           )
         }}
       />
+      <Stack.Screen
+        name="help"
+        options={{
+          header: () => (
+            <ScreenHeader>
+              <ScreenHeader.BackIcon />
+              <ScreenHeader.Title title="Help & FAQs" />
+            </ScreenHeader>
+          )
+        }}
+      />
     </Stack>
   )
 }
