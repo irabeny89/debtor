@@ -16,6 +16,7 @@ type DebtorFormProps = {
   headerIcon: keyof typeof Ionicons.glyphMap;
   headerSubtitle: string;
   submitButtonText: string;
+  updatedAt?: Date;
 };
 
 export default function DebtorForm({
@@ -24,6 +25,7 @@ export default function DebtorForm({
   headerIcon,
   headerSubtitle,
   submitButtonText,
+  updatedAt,
 }: DebtorFormProps) {
   const [firstName, setFirstName] = useState(initialValues?.firstName || "");
   const [lastName, setLastName] = useState(initialValues?.lastName || "");
@@ -141,6 +143,18 @@ export default function DebtorForm({
             />
           </View>
         </View>
+
+        {updatedAt && (
+          <View style={styles.lastUpdatedContainer}>
+            <Ionicons name="time-outline" size={16} color="#6B7280" style={styles.lastUpdatedIcon} />
+            <Text style={styles.lastUpdatedText}>
+              Last updated: {new Date(updatedAt).toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </Text>
+          </View>
+        )}
       </ScrollView>
 
       <View style={styles.footer}>
@@ -280,5 +294,21 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
+  },
+  lastUpdatedContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    marginBottom: 10,
+    gap: 6,
+  },
+  lastUpdatedIcon: {
+    marginRight: 2,
+  },
+  lastUpdatedText: {
+    fontSize: 13,
+    color: "#6B7280",
+    fontWeight: "500",
   },
 });

@@ -16,6 +16,7 @@ export default function EditDebtorScreen() {
         mockDebtors[index] = {
           ...mockDebtors[index],
           ...data,
+          updatedAt: new Date(),
         };
       }
     }
@@ -37,6 +38,7 @@ export default function EditDebtorScreen() {
       headerIcon="pencil"
       headerSubtitle="Update the debtor's details below."
       submitButtonText="Update Debtor"
+      updatedAt={debtor?.updatedAt}
     />
   );
 }

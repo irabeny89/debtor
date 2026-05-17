@@ -22,6 +22,7 @@ export default function EditLoanScreen() {
           lateFeeCycle: parseInt(data.duration, 10),
           lateFeeRate: parseFloat(data.lateFee) / 100,
           notifyOnDue: data.notify,
+          updatedAt: new Date(),
         };
       }
     }
@@ -40,6 +41,7 @@ export default function EditLoanScreen() {
       } : undefined}
       onSubmit={handleSave}
       submitButtonText="Update Loan"
+      updatedAt={loan?.updatedAt}
     />
   );
 }
