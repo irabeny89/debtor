@@ -64,6 +64,13 @@ export default function DetailScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
       {/* Profile Header Card */}
       <View style={styles.profileCard}>
+        <TouchableOpacity 
+          style={styles.editButton} 
+          onPress={() => router.push(`/(tabs)/(debtor)/edit?id=${id}`)}
+        >
+          <Ionicons name="pencil" size={18} color="#4F46E5" />
+        </TouchableOpacity>
+        
         <View style={styles.avatarContainer}>
           <Text style={styles.avatarText}>{initials}</Text>
           <View style={[
@@ -189,6 +196,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 16,
     marginBottom: 24,
+  },
+  editButton: {
+    position: "absolute",
+    top: 16,
+    right: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#EEF2FF",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
   },
   avatarContainer: {
     width: 80,

@@ -44,6 +44,17 @@ export default function DebtorLayout() {
           )
         }}
       />
+      <Stack.Screen
+        name="edit"
+        options={{
+          header: () => (
+            <ScreenHeader>
+              <ScreenHeader.BackIcon />
+              <ScreenHeader.Title title="Edit Debtor" />
+            </ScreenHeader>
+          )
+        }}
+      />
     </Stack>
   )
 }
