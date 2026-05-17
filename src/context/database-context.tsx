@@ -27,11 +27,11 @@ type DatabaseContextT = {
   updateLoan: (id: number, loan: Partial<LoanT>) => void;
   deleteLoan: (id: number) => void;
   refreshData: () => void;
-  restoreDatabase: (debtors: any[], loans: any[]) => void;
+  restoreDatabase: (debtors: DebtorT[], loans: LoanT[]) => void;
   clearDatabase: () => void;
   seedDatabase: () => void;
-  importDebtors: (debtors: any[], replace: boolean) => void;
-  importLoans: (loans: any[], replace: boolean) => void;
+  importDebtors: (debtors: DebtorT[], replace: boolean) => void;
+  importLoans: (loans: LoanT[], replace: boolean) => void;
 };
 
 const DatabaseContext = createContext<DatabaseContextT | undefined>(undefined);
