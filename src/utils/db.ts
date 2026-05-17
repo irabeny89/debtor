@@ -334,3 +334,54 @@ export function clearDb(): void {
 export function seedDb(): void {
   restoreDb(mockDebtors, mockLoans);
 }
+
+export function importDebtorsListInDb(debtors: any[], replace: boolean): void {
+  const database = getDbConnection();
+  if (replace) {
+    database.runSync("DELETE FROM loans;");
+    database.runSync("DELETE FROM debtors;");
+  }
+  for (const d of debtors) {
+    database.runSync(
+      `INSERT INTO debtors (firstName, lastName, gender, phone, workPlace, status, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+      [
+        d.firstName,
+        d.lastName,
+        d.gender,
+        d.phone,
+        d.workPlace,
+        d.status,
+        d.createdAt instanceof Date ? d.createdAt.toISOString() : new Date(d.createdAt).toISOString(),
+        d.updatedAt instanceof Date ? d.updatedAt.toISOString() : new Date(d.updatedAt).toISOString()
+      ]
+    );
+  }
+}
+
+export function importLoansListInDb(loans: any[], replace: boolean): void {
+  const database = getDbConnection();
+  if (replace) {
+    database.runSync("DELETE FROM loans;");
+  }
+  for (const l of loans) {
+    database.runSync(
+      `INSERT INTO loans (debtorId, amount, currency, interest, dueDate, lateFeeRate, lateFeeCycle, status, notifyOnDue, settledAt, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      [
+        l.debtorId,
+        l.amount,
+        l.currency,
+        l.interest,
+        l.dueDate instanceof Date ? l.dueDate.toISOString() : new Date(l.dueDate).toISOString(),
+        l.lateFeeRate,
+        l.lateFeeCycle,
+        l.status,
+        l.notifyOnDue ? 1 : 0,
+        l.settledAt ? (l.settledAt instanceof Date ? l.settledAt.toISOString() : new Date(l.settledAt).toISOString()) : null,
+        l.createdAt instanceof Date ? l.createdAt.toISOString() : new Date(l.createdAt).toISOString(),
+        l.updatedAt instanceof Date ? l.updatedAt.toISOString() : new Date(l.updatedAt).toISOString()
+      ]
+    );
+  }
+}

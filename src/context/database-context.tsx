@@ -13,6 +13,8 @@ import {
   restoreDb,
   clearDb,
   seedDb,
+  importDebtorsListInDb,
+  importLoansListInDb,
 } from "@/utils/db";
 
 type DatabaseContextT = {
@@ -28,6 +30,8 @@ type DatabaseContextT = {
   restoreDatabase: (debtors: any[], loans: any[]) => void;
   clearDatabase: () => void;
   seedDatabase: () => void;
+  importDebtors: (debtors: any[], replace: boolean) => void;
+  importLoans: (loans: any[], replace: boolean) => void;
 };
 
 const DatabaseContext = createContext<DatabaseContextT | undefined>(undefined);
@@ -106,6 +110,16 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
     refreshData();
   };
 
+  const importDebtors = (debtorsList: any[], replace: boolean) => {
+    importDebtorsListInDb(debtorsList, replace);
+    refreshData();
+  };
+
+  const importLoans = (loansList: any[], replace: boolean) => {
+    importLoansListInDb(loansList, replace);
+    refreshData();
+  };
+
   if (!isReady) {
     return null; // Or a splash screen
   }
@@ -125,6 +139,8 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
         restoreDatabase,
         clearDatabase,
         seedDatabase,
+        importDebtors,
+        importLoans,
       }}
     >
       {children}

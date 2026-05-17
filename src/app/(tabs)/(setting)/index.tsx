@@ -14,6 +14,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useDatabase } from "@/context/database-context";
 import { mockDebtors } from "@/data/debtor";
 import { mockLoans } from "@/data/loan";
+import {
+  exportDataToJson,
+  exportDebtorsToCsvFile,
+  exportLoansToCsvFile,
+  importFromFile,
+} from "@/utils/file-transfer";
 
 export default function SettingsScreen() {
   const [isBackingUp, setIsBackingUp] = useState(false);
@@ -21,7 +27,15 @@ export default function SettingsScreen() {
   const [isClearing, setIsClearing] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
   const [lastBackup, setLastBackup] = useState<string>("Never");
-  const { debtors, loans, restoreDatabase, clearDatabase, seedDatabase } = useDatabase();
+  const { 
+    debtors, 
+    loans, 
+    restoreDatabase, 
+    clearDatabase, 
+    seedDatabase,
+    importDebtors,
+    importLoans
+  } = useDatabase();
 
   const handleBackup = async () => {
     setIsBackingUp(true);
@@ -149,6 +163,101 @@ export default function SettingsScreen() {
     );
   };
 
+  const handleExportJson = async () => {
+    try {
+      await exportDataToJson(debtors, loans);
+    } catch (error) {
+      Alert.alert("Export Failed", "Could not export database to JSON backup.");
+    }
+  };
+
+  const handleExportDebtorsCsv = async () => {
+    try {
+      await exportDebtorsToCsvFile(debtors);
+    } catch (error) {
+      Alert.alert("Export Failed", "Could not export debtors to CSV.");
+    }
+  };
+
+  const handleExportLoansCsv = async () => {
+    try {
+      await exportLoansToCsvFile(loans);
+    } catch (error) {
+      Alert.alert("Export Failed", "Could not export loans to CSV.");
+    }
+  };
+
+  const handleImportFile = async () => {
+    const importResult = await importFromFile();
+    if (!importResult) return;
+
+    const { type, debtors: importedDebtors, loans: importedLoans } = importResult;
+
+    if (type === "json" && importedDebtors && importedLoans) {
+      Alert.alert(
+        "Import JSON Backup",
+        `This will completely wipe your database and restore ${importedDebtors.length} debtors and ${importedLoans.length} loans from your backup file. Proceed?`,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Restore Backup",
+            style: "destructive",
+            onPress: () => {
+              restoreDatabase(importedDebtors, importedLoans);
+              Alert.alert("Import Successful", "JSON backup data restored successfully!");
+            }
+          }
+        ]
+      );
+    } else if (type === "debtors-csv" && importedDebtors) {
+      Alert.alert(
+        "Import Debtors CSV",
+        `Found ${importedDebtors.length} debtors. How would you like to import them?`,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Append",
+            onPress: () => {
+              importDebtors(importedDebtors, false);
+              Alert.alert("Import Successful", `Appended ${importedDebtors.length} debtors.`);
+            }
+          },
+          {
+            text: "Overwrite",
+            style: "destructive",
+            onPress: () => {
+              importDebtors(importedDebtors, true);
+              Alert.alert("Import Successful", `Replaced database with ${importedDebtors.length} debtors.`);
+            }
+          }
+        ]
+      );
+    } else if (type === "loans-csv" && importedLoans) {
+      Alert.alert(
+        "Import Loans CSV",
+        `Found ${importedLoans.length} loans. How would you like to import them?`,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Append",
+            onPress: () => {
+              importLoans(importedLoans, false);
+              Alert.alert("Import Successful", `Appended ${importedLoans.length} loans.`);
+            }
+          },
+          {
+            text: "Overwrite",
+            style: "destructive",
+            onPress: () => {
+              importLoans(importedLoans, true);
+              Alert.alert("Import Successful", `Replaced database with ${importedLoans.length} loans.`);
+            }
+          }
+        ]
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -239,6 +348,61 @@ export default function SettingsScreen() {
               )}
             </TouchableOpacity>
           </View>
+        </View>
+
+        {/* File Exchange Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionHeader}>File Import & Export</Text>
+          
+          <View style={styles.cloudCard}>
+            <View style={styles.cloudHeader}>
+              <View style={[styles.cloudIconContainer, { backgroundColor: "#F3F4F6" }]}>
+                <Ionicons name="document-text-outline" size={26} color="#4B5563" />
+              </View>
+              <View style={styles.cloudInfo}>
+                <Text style={styles.cloudTitle}>Offline File Exchange</Text>
+                <Text style={styles.cloudSubtitle}>Import or export your records in CSV or JSON files</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Export Actions */}
+          <Text style={styles.subHeader}>Export Data</Text>
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.exportJsonButton]} 
+              onPress={handleExportJson}
+            >
+              <Ionicons name="share-social-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
+              <Text style={styles.buttonText}>JSON Backup</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.exportCsvButton]} 
+              onPress={handleExportDebtorsCsv}
+            >
+              <Ionicons name="people-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
+              <Text style={styles.buttonText}>Debtors CSV</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.exportCsvButton]} 
+              onPress={handleExportLoansCsv}
+            >
+              <Ionicons name="wallet-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
+              <Text style={styles.buttonText}>Loans CSV</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Import Action */}
+          <Text style={styles.subHeader}>Import Data</Text>
+          <TouchableOpacity 
+            style={styles.importFileButton} 
+            onPress={handleImportFile}
+          >
+            <Ionicons name="document-attach-outline" size={20} color="#4F46E5" style={styles.buttonIcon} />
+            <Text style={styles.importFileText}>Choose File (JSON / CSV)</Text>
+          </TouchableOpacity>
         </View>
 
         {/* General Settings */}
@@ -432,6 +596,39 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     backgroundColor: "#EF4444",
+  },
+  subHeader: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#6B7280",
+    textTransform: "uppercase",
+    marginTop: 16,
+    marginBottom: 6,
+    letterSpacing: 0.5,
+  },
+  exportJsonButton: {
+    backgroundColor: "#6366F1",
+  },
+  exportCsvButton: {
+    backgroundColor: "#4B5563",
+  },
+  importFileButton: {
+    width: "100%",
+    height: 52,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+    borderColor: "#4F46E5",
+    backgroundColor: "#F5F3FF",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 4,
+  },
+  importFileText: {
+    color: "#4F46E5",
+    fontSize: 14,
+    fontWeight: "700",
   },
   buttonIcon: {
     marginRight: 8,
