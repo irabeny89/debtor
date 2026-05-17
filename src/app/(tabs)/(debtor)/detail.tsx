@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import useDebtor from "@/hooks/use-debtor";
 import useLoanList from "@/hooks/use-loan-list";
@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import useSettingData from "@/hooks/use-setting-data";
 import { LoanT } from "@/types";
 import DebtorLoan from "@/components/debtor/debtor-loan";
+import { mockDebtors } from "@/data/debtor";
 
 type ParamsT = {
   id: string
@@ -37,6 +38,27 @@ export default function DetailScreen() {
   const totalLoanWorth = debtorLoans.reduce((acc, loan) => acc + calcLoanWorth(loan), 0) / 100;
   const activeLoans = debtorLoans.filter(l => l.status === "granted" || l.status === "overdue");
   const settledLoans = debtorLoans.filter(l => l.status === "settled");
+
+  const handleDeleteDebtor = () => {
+    Alert.alert(
+      "Delete Debtor",
+      `Are you sure you want to delete ${debtor.firstName} ${debtor.lastName}?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Delete", 
+          style: "destructive",
+          onPress: () => {
+            const index = mockDebtors.findIndex(d => d.id === id);
+            if (index !== -1) {
+              mockDebtors.splice(index, 1);
+            }
+            router.back();
+          }
+        }
+      ]
+    );
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
@@ -118,6 +140,14 @@ export default function DetailScreen() {
           <View style={styles.emptyState}>
             <Ionicons name="wallet-outline" size={48} color="#9CA3AF" />
             <Text style={styles.emptyStateText}>No loans recorded yet.</Text>
+            
+            <TouchableOpacity 
+              style={styles.deleteButton} 
+              onPress={handleDeleteDebtor}
+            >
+              <Ionicons name="trash-outline" size={20} color="#EF4444" />
+              <Text style={styles.deleteButtonText}>Delete Debtor</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.loansList}>
@@ -314,6 +344,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#6B7280",
     fontWeight: "500",
+  },
+  deleteButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FEE2E2",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginTop: 24,
+    gap: 8,
+  },
+  deleteButtonText: {
+    color: "#EF4444",
+    fontWeight: "600",
+    fontSize: 15,
   },
   loansList: {
     gap: 12,
