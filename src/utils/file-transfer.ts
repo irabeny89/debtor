@@ -1,7 +1,7 @@
-import { documentDirectory, writeAsStringAsync, readAsStringAsync, EncodingType } from "expo-file-system/legacy";
+import { documentDirectory, writeAsStringAsync, readAsStringAsync, EncodingType, StorageAccessFramework } from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 import { DebtorT, LoanT } from "@/types";
 
 // Helper to escape CSV values
@@ -111,6 +111,46 @@ export function parseCsv(text: string): string[][] {
   return result.filter(r => r.length > 0 && r.some(cell => cell.trim() !== ""));
 }
 
+// Helper to save files directly to the filesystem or show share sheet
+async function saveFileToDevice(fileContent: string, fileName: string, mimeType: string, dialogTitle: string) {
+  try {
+    if (Platform.OS === "android") {
+      const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (!permissions.granted) {
+        Alert.alert("Permission Denied", "Cannot save file without folder permissions.");
+        return;
+      }
+      
+      const fileUri = await StorageAccessFramework.createFileAsync(
+        permissions.directoryUri,
+        fileName.replace(/\.[^/.]+$/, ""), // remove extension as SAF handles/adds it or based on mimeType
+        mimeType
+      );
+      
+      await writeAsStringAsync(fileUri, fileContent, {
+        encoding: EncodingType.UTF8,
+      });
+      
+      Alert.alert("Success", `${fileName} saved successfully!`);
+    } else {
+      // iOS / other platforms
+      const tempUri = `${documentDirectory}${fileName}`;
+      await writeAsStringAsync(tempUri, fileContent, {
+        encoding: EncodingType.UTF8,
+      });
+
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(tempUri, { mimeType, dialogTitle });
+      } else {
+        Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
+      }
+    }
+  } catch (error) {
+    console.error("Save file error:", error);
+    Alert.alert("Error Saving File", "An error occurred while saving the file to your device.");
+  }
+}
+
 // Exporters
 export async function exportDataToJson(debtors: DebtorT[], loans: LoanT[]) {
   const backupData = {
@@ -118,61 +158,25 @@ export async function exportDataToJson(debtors: DebtorT[], loans: LoanT[]) {
     loans,
     backedUpAt: new Date().toISOString(),
   };
-  
-  const fileUri = `${documentDirectory}debtors_and_loans_backup.json`;
-  await writeAsStringAsync(fileUri, JSON.stringify(backupData, null, 2), {
-    encoding: EncodingType.UTF8,
-  });
-
-  if (await Sharing.isAvailableAsync()) {
-    await Sharing.shareAsync(fileUri, { mimeType: "application/json", dialogTitle: "Export Database JSON Backup" });
-  } else {
-    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
-  }
+  const jsonString = JSON.stringify(backupData, null, 2);
+  await saveFileToDevice(jsonString, "debtors_and_loans_backup.json", "application/json", "Export Database JSON Backup");
 }
 
 export async function exportDebtorsToCsvFile(debtors: DebtorT[]) {
   const csvData = debtorsToCsv(debtors);
-  const fileUri = `${documentDirectory}debtors.csv`;
-  await writeAsStringAsync(fileUri, csvData, {
-    encoding: EncodingType.UTF8,
-  });
-
-  if (await Sharing.isAvailableAsync()) {
-    await Sharing.shareAsync(fileUri, { mimeType: "text/csv", dialogTitle: "Export Debtors to CSV" });
-  } else {
-    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
-  }
+  await saveFileToDevice(csvData, "debtors.csv", "text/csv", "Export Debtors to CSV");
 }
 
 export async function exportLoansToCsvFile(loans: LoanT[]) {
   const csvData = loansToCsv(loans);
-  const fileUri = `${documentDirectory}loans.csv`;
-  await writeAsStringAsync(fileUri, csvData, {
-    encoding: EncodingType.UTF8,
-  });
-
-  if (await Sharing.isAvailableAsync()) {
-    await Sharing.shareAsync(fileUri, { mimeType: "text/csv", dialogTitle: "Export Loans to CSV" });
-  } else {
-    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
-  }
+  await saveFileToDevice(csvData, "loans.csv", "text/csv", "Export Loans to CSV");
 }
 
 export async function shareDebtorsTemplateCsv() {
   const headers = ["firstName", "lastName", "gender", "phone", "workPlace", "status", "createdAt", "updatedAt"];
   const sampleRow = ["Jane", "Doe", "f", "+2348012345678", "Freelancer", "Inactive", new Date().toISOString(), new Date().toISOString()];
   const csvData = [headers.join(","), sampleRow.map(escapeCsvValue).join(",")].join("\n");
-  const fileUri = `${documentDirectory}debtors_template.csv`;
-  await writeAsStringAsync(fileUri, csvData, {
-    encoding: EncodingType.UTF8,
-  });
-
-  if (await Sharing.isAvailableAsync()) {
-    await Sharing.shareAsync(fileUri, { mimeType: "text/csv", dialogTitle: "Download Debtors CSV Template" });
-  } else {
-    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
-  }
+  await saveFileToDevice(csvData, "debtors_template.csv", "text/csv", "Download Debtors CSV Template");
 }
 
 export async function shareLoansTemplateCsv() {
@@ -187,16 +191,7 @@ export async function shareLoansTemplateCsv() {
     new Date().toISOString(), new Date().toISOString()
   ];
   const csvData = [headers.join(","), sampleRow.map(escapeCsvValue).join(",")].join("\n");
-  const fileUri = `${documentDirectory}loans_template.csv`;
-  await writeAsStringAsync(fileUri, csvData, {
-    encoding: EncodingType.UTF8,
-  });
-
-  if (await Sharing.isAvailableAsync()) {
-    await Sharing.shareAsync(fileUri, { mimeType: "text/csv", dialogTitle: "Download Loans CSV Template" });
-  } else {
-    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
-  }
+  await saveFileToDevice(csvData, "loans_template.csv", "text/csv", "Download Loans CSV Template");
 }
 
 export async function shareJsonTemplate() {
@@ -233,17 +228,8 @@ export async function shareJsonTemplate() {
     ],
     backedUpAt: new Date().toISOString()
   };
-
-  const fileUri = `${documentDirectory}backup_template.json`;
-  await writeAsStringAsync(fileUri, JSON.stringify(templateData, null, 2), {
-    encoding: EncodingType.UTF8,
-  });
-
-  if (await Sharing.isAvailableAsync()) {
-    await Sharing.shareAsync(fileUri, { mimeType: "application/json", dialogTitle: "Download JSON Backup Template" });
-  } else {
-    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
-  }
+  const jsonString = JSON.stringify(templateData, null, 2);
+  await saveFileToDevice(jsonString, "backup_template.json", "application/json", "Download JSON Backup Template");
 }
 
 // Importer
