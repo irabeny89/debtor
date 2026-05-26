@@ -15,12 +15,24 @@ import { Ionicons } from "@expo/vector-icons";
 
 type FaqItem = {
   id: string;
-  category: "general" | "loans" | "security" | "backup";
+  category: "general" | "loans" | "security" | "backup" | "info" | "support";
   question: string;
   answer: string;
 };
 
 const FAQ_DATA: FaqItem[] = [
+  {
+    id: "i1",
+    category: "info",
+    question: "What is Debtor Tracker Mobile?",
+    answer: "Debtor Tracker Mobile is a mobile application that helps individuals and small businesses keep track of their debtors and loans.",
+  },
+  {
+    id: "i2",
+    category: "info",
+    question: "What is the current version of Debtor Tracker Mobile?",
+    answer: "The current version of Debtor Tracker Mobile is 1.0.0.",
+  },
   {
     id: "g1",
     category: "general",
@@ -75,11 +87,47 @@ const FAQ_DATA: FaqItem[] = [
     question: "How do I import/export CSV files?",
     answer: "Under Settings > File Import & Export, you can export your debtors or loans into standard CSV files to view in Excel or Google Sheets. You can also import CSV files to append or replace your current database records.",
   },
+  {
+    id: "b3",
+    category: "backup",
+    question: "How to use the import template for json/csv files?",
+    answer: "Under Settings > File Import & Export, in the 'Import Templates' section, tap the appropriate button to download the import template. Then, import using the 'Import Data' section to import debtors or loans into your database.",
+  },
+  {
+    id: "b4",
+    category: "backup",
+    question: "How do I restore a backup?",
+    answer: "Under Settings > Data Management, tap 'Restore Backup' to restore a backup file.",
+  },
+  {
+    id: "b5",
+    category: "backup",
+    question: "How do I clear all data?",
+    answer: "Under Settings > Data Management, tap 'Clear Database' to clear all data.",
+  },
+  {
+    id: "h1",
+    category: "support",
+    question: "How do I contact support?",
+    answer: "Under Settings > Support, tap 'Contact Support' to send an email to our support team.",
+  },
+  {
+    id: "h2",
+    category: "support",
+    question: "How do I report a bug?",
+    answer: "Under Settings > Support, tap 'Report Bug' to send an email to our support team.",
+  },
+  {
+    id: "h3",
+    category: "support",
+    question: "How do I suggest a feature?",
+    answer: "Under Settings > Support, tap 'Suggest Feature' to send an email to our support team.",
+  },
 ];
 
 export default function HelpScreen() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<"all" | "general" | "loans" | "security" | "backup">("all");
+  const [activeCategory, setActiveCategory] = useState<"all" | "general" | "loans" | "security" | "backup" | "support" | "info">("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
@@ -119,7 +167,7 @@ export default function HelpScreen() {
       {/* Category Filter Badges */}
       <View style={styles.badgeContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.badgeScroll}>
-          {(["all", "general", "loans", "security", "backup"] as const).map((cat) => (
+          {(["all", "info", "general", "loans", "security", "backup", "support"] as const).map((cat) => (
             <TouchableOpacity
               key={cat}
               style={[
