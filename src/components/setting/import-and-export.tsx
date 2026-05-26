@@ -6,6 +6,9 @@ import {
   exportDebtorsToCsvFile,
   exportLoansToCsvFile,
   importFromFile,
+  shareDebtorsTemplateCsv,
+  shareLoansTemplateCsv,
+  shareJsonTemplate,
 } from "@/utils/file-transfer";
 import { DebtorT, LoanT } from "@/types";
 
@@ -38,6 +41,30 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
       await exportLoansToCsvFile(loans);
     } catch (error) {
       Alert.alert("Export Failed", "Could not export loans to CSV.");
+    }
+  };
+
+  const handleDownloadDebtorsTemplate = async () => {
+    try {
+      await shareDebtorsTemplateCsv();
+    } catch (error) {
+      Alert.alert("Download Failed", "Could not download debtors CSV template.");
+    }
+  };
+
+  const handleDownloadLoansTemplate = async () => {
+    try {
+      await shareLoansTemplateCsv();
+    } catch (error) {
+      Alert.alert("Download Failed", "Could not download loans CSV template.");
+    }
+  };
+
+  const handleDownloadJsonTemplate = async () => {
+    try {
+      await shareJsonTemplate();
+    } catch (error) {
+      Alert.alert("Download Failed", "Could not download JSON backup template.");
     }
   };
 
@@ -156,6 +183,34 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
         </TouchableOpacity>
       </View>
 
+      {/* Import Templates */}
+      <Text style={styles.subHeader}>Import Templates</Text>
+      <View style={styles.actionsContainer}>
+        <TouchableOpacity
+          style={[styles.actionButton, styles.templateButton]}
+          onPress={handleDownloadJsonTemplate}
+        >
+          <Ionicons name="download-outline" size={16} color="#4F46E5" style={styles.buttonIcon} />
+          <Text style={styles.templateButtonText}>JSON Backup</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, styles.templateButton]}
+          onPress={handleDownloadDebtorsTemplate}
+        >
+          <Ionicons name="download-outline" size={16} color="#4F46E5" style={styles.buttonIcon} />
+          <Text style={styles.templateButtonText}>Debtors CSV</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, styles.templateButton]}
+          onPress={handleDownloadLoansTemplate}
+        >
+          <Ionicons name="download-outline" size={16} color="#4F46E5" style={styles.buttonIcon} />
+          <Text style={styles.templateButtonText}>Loans CSV</Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Import Action */}
       <Text style={styles.subHeader}>Import Data</Text>
       <TouchableOpacity
@@ -251,6 +306,16 @@ const styles = StyleSheet.create({
   },
   exportCsvButton: {
     backgroundColor: "#4B5563",
+  },
+  templateButton: {
+    backgroundColor: "#EEF2FF",
+    borderWidth: 1.5,
+    borderColor: "#C7D2FE",
+  },
+  templateButtonText: {
+    color: "#4F46E5",
+    fontSize: 14,
+    fontWeight: "700",
   },
   importFileButton: {
     width: "100%",

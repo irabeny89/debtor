@@ -159,6 +159,93 @@ export async function exportLoansToCsvFile(loans: LoanT[]) {
   }
 }
 
+export async function shareDebtorsTemplateCsv() {
+  const headers = ["firstName", "lastName", "gender", "phone", "workPlace", "status", "createdAt", "updatedAt"];
+  const sampleRow = ["Jane", "Doe", "f", "+2348012345678", "Freelancer", "Inactive", new Date().toISOString(), new Date().toISOString()];
+  const csvData = [headers.join(","), sampleRow.map(escapeCsvValue).join(",")].join("\n");
+  const fileUri = `${documentDirectory}debtors_template.csv`;
+  await writeAsStringAsync(fileUri, csvData, {
+    encoding: EncodingType.UTF8,
+  });
+
+  if (await Sharing.isAvailableAsync()) {
+    await Sharing.shareAsync(fileUri, { mimeType: "text/csv", dialogTitle: "Download Debtors CSV Template" });
+  } else {
+    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
+  }
+}
+
+export async function shareLoansTemplateCsv() {
+  const headers = [
+    "debtorId", "amount", "currency", "interest", "dueDate",
+    "lateFeeRate", "lateFeeCycle", "status", "notifyOnDue", "settledAt",
+    "createdAt", "updatedAt"
+  ];
+  const sampleRow = [
+    "1", "50000", "NGN", "10.0", new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    "5.0", "7", "granted", "1", "",
+    new Date().toISOString(), new Date().toISOString()
+  ];
+  const csvData = [headers.join(","), sampleRow.map(escapeCsvValue).join(",")].join("\n");
+  const fileUri = `${documentDirectory}loans_template.csv`;
+  await writeAsStringAsync(fileUri, csvData, {
+    encoding: EncodingType.UTF8,
+  });
+
+  if (await Sharing.isAvailableAsync()) {
+    await Sharing.shareAsync(fileUri, { mimeType: "text/csv", dialogTitle: "Download Loans CSV Template" });
+  } else {
+    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
+  }
+}
+
+export async function shareJsonTemplate() {
+  const templateData = {
+    debtors: [
+      {
+        id: 1,
+        firstName: "Jane",
+        lastName: "Doe",
+        gender: "f",
+        phone: "+2348012345678",
+        workPlace: "Freelancer",
+        status: "Inactive",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ],
+    loans: [
+      {
+        id: 1,
+        debtorId: 1,
+        amount: 50000,
+        currency: "NGN",
+        interest: 10,
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        lateFeeRate: 5.0,
+        lateFeeCycle: 7,
+        status: "granted",
+        notifyOnDue: true,
+        settledAt: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ],
+    backedUpAt: new Date().toISOString()
+  };
+
+  const fileUri = `${documentDirectory}backup_template.json`;
+  await writeAsStringAsync(fileUri, JSON.stringify(templateData, null, 2), {
+    encoding: EncodingType.UTF8,
+  });
+
+  if (await Sharing.isAvailableAsync()) {
+    await Sharing.shareAsync(fileUri, { mimeType: "application/json", dialogTitle: "Download JSON Backup Template" });
+  } else {
+    Alert.alert("Sharing Not Available", "File sharing is not supported on this device.");
+  }
+}
+
 // Importer
 export async function importFromFile(): Promise<{
   type: "json" | "debtors-csv" | "loans-csv";
