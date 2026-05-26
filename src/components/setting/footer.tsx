@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from "react-native"
+import pkg from '../../../package.json' with { type: 'json' };
 
 export default function Footer() {
   return (
     <View style={styles.footerContainer}>
-      <Text style={styles.footerText}>Debtor Tracker Mobile v1.0.0</Text>
+      <Text style={styles.footerText}>Debtor Tracker Mobile v{pkg.version}</Text>
       <Text style={styles.footerSubText}>Safeguarding your records with premium care.</Text>
     </View>
   )
