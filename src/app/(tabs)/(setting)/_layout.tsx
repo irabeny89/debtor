@@ -16,17 +16,6 @@ export default function SettingLayout() {
         }}
       />
       <Stack.Screen
-        name="backup"
-        options={{
-          header: () => (
-            <ScreenHeader>
-              <ScreenHeader.BackIcon />
-              <ScreenHeader.Title title="Backup" />
-            </ScreenHeader>
-          )
-        }}
-      />
-      <Stack.Screen
         name="help"
         options={{
           header: () => (
