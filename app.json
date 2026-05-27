@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "debtor-mobile",
+    "name": "debtor",
     "slug": "debtor-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,8 @@
     "scheme": "debtormobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/images/debtor-icon.png"
+      "icon": "./assets/images/debtor-icon.png",
+      "bundleIdentifier": "com.anonymous.debtormobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -16,7 +17,8 @@
         "foregroundImage": "./assets/images/debtor-fg-icon.png",
         "monochromeImage": "./assets/images/debtor-mono-icon.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.debtormobile"
     },
     "web": {
       "output": "static",
@@ -40,6 +42,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d43563d0-4cc4-4885-888a-5fd9016e389b"
+      }
     }
   }
 }

@@ -5,12 +5,13 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
     "type:check": "bunx tsc --noEmit",
     "eas-conf": "eas build:configure",
+    "eas-build:android-preview": "eas build --platform android --profile development",
     "eas-build:android-dev": "eas build --platform android --profile development",
     "db:clear": "adb shell pm clear host.exp.exponent",
     "db:reset": "bun run db:clear && bun run start"

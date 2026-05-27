@@ -422,12 +422,12 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFFFFF",
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "700",
   },
   restoreText: {
     color: "#4F46E5",
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "700",
   },
   settingRow: {

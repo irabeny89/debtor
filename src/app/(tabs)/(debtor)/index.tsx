@@ -79,8 +79,7 @@ export default function DebtorScreen() {
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 10,
-		paddingVertical: 20,
-		paddingBottom: 200
+		paddingBottom: 250
 	},
 	emptyState: {
 		justifyContent: "center",

@@ -142,7 +142,6 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
   return (
     <View style={styles.section}>
       <Text style={styles.sectionHeader}>File Import & Export</Text>
-
       <View style={styles.cloudCard}>
         <View style={styles.cloudHeader}>
           <View style={[styles.cloudIconContainer, { backgroundColor: "#F3F4F6" }]}>
@@ -154,7 +153,6 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
           </View>
         </View>
       </View>
-
       {/* Export Actions */}
       <Text style={styles.subHeader}>Export Data</Text>
       <View style={styles.actionsContainer}>
@@ -314,7 +312,7 @@ const styles = StyleSheet.create({
   },
   templateButtonText: {
     color: "#4F46E5",
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "700",
   },
   importFileButton: {
@@ -340,7 +338,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFFFFF",
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "700",
   },
 })
