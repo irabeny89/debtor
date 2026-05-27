@@ -226,7 +226,9 @@ export default function BackupAndRestore({
           ) : (
             <>
               <Ionicons name="cloud-upload" size={20} color="#FFFFFF" style={styles.buttonIcon} />
-              <Text style={styles.buttonText}>Back Up Now</Text>
+              <Text style={styles.buttonText} allowFontScaling={false}>
+                Back Up Now
+              </Text>
             </>
           )}
         </TouchableOpacity>
@@ -241,7 +243,9 @@ export default function BackupAndRestore({
           ) : (
             <>
               <Ionicons name="cloud-download-outline" size={20} color="#4F46E5" style={styles.buttonIcon} />
-              <Text style={styles.restoreText}>Restore Data</Text>
+              <Text style={styles.restoreText} allowFontScaling={false}>
+                Restore Data
+              </Text>
             </>
           )}
         </TouchableOpacity>
@@ -258,7 +262,9 @@ export default function BackupAndRestore({
           ) : (
             <>
               <Ionicons name="people" size={20} color="#FFFFFF" style={styles.buttonIcon} />
-              <Text style={styles.buttonText}>Load Mock Data</Text>
+              <Text style={styles.buttonText} allowFontScaling={false}>
+                Load Mock Data
+              </Text>
             </>
           )}
         </TouchableOpacity>
@@ -273,7 +279,9 @@ export default function BackupAndRestore({
           ) : (
             <>
               <Ionicons name="trash-outline" size={20} color="#FFFFFF" style={styles.buttonIcon} />
-              <Text style={styles.buttonText}>Clear All Data</Text>
+              <Text style={styles.buttonText} allowFontScaling={false}>
+                Clear All Data
+              </Text>
             </>
           )}
         </TouchableOpacity>

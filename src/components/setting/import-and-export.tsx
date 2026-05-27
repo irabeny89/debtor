@@ -161,7 +161,9 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
           onPress={handleExportJson}
         >
           <Ionicons name="share-social-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
-          <Text style={styles.buttonText}>JSON Backup</Text>
+          <Text style={styles.buttonText} allowFontScaling={false}>
+            JSON Backup
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -169,7 +171,9 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
           onPress={handleExportDebtorsCsv}
         >
           <Ionicons name="people-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
-          <Text style={styles.buttonText}>Debtors CSV</Text>
+          <Text style={styles.buttonText} allowFontScaling={false}>
+            Debtors CSV
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -177,7 +181,9 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
           onPress={handleExportLoansCsv}
         >
           <Ionicons name="wallet-outline" size={16} color="#FFFFFF" style={styles.buttonIcon} />
-          <Text style={styles.buttonText}>Loans CSV</Text>
+          <Text style={styles.buttonText} allowFontScaling={false}>
+            Loans CSV
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -189,7 +195,9 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
           onPress={handleDownloadJsonTemplate}
         >
           <Ionicons name="download-outline" size={16} color="#4F46E5" style={styles.buttonIcon} />
-          <Text style={styles.templateButtonText}>JSON Backup</Text>
+          <Text style={styles.templateButtonText} allowFontScaling={false}>
+            JSON Backup
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -197,7 +205,9 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
           onPress={handleDownloadDebtorsTemplate}
         >
           <Ionicons name="download-outline" size={16} color="#4F46E5" style={styles.buttonIcon} />
-          <Text style={styles.templateButtonText}>Debtors CSV</Text>
+          <Text style={styles.templateButtonText} allowFontScaling={false}>
+            Debtors CSV
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -205,7 +215,9 @@ export default function ImportAndExport({ debtors, loans, importDebtors, importL
           onPress={handleDownloadLoansTemplate}
         >
           <Ionicons name="download-outline" size={16} color="#4F46E5" style={styles.buttonIcon} />
-          <Text style={styles.templateButtonText}>Loans CSV</Text>
+          <Text style={styles.templateButtonText} allowFontScaling={false}>
+            Loans CSV
+          </Text>
         </TouchableOpacity>
       </View>
 

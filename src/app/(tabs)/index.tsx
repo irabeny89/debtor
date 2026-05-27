@@ -8,7 +8,7 @@ import { StatusBar } from "expo-status-bar";
 export default function Index() {
 	return (
 		<SafeAreaView style={styles.container}>
-			<StatusBar />
+			<StatusBar style="inverted" />
 			<ScrollView contentContainerStyle={styles.scrollContainer}>
 				<CurrentDate />
 				<DebtorStats />

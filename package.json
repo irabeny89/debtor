@@ -11,7 +11,7 @@
     "lint": "expo lint",
     "type:check": "bunx tsc --noEmit",
     "eas-conf": "eas build:configure",
-    "eas-build:android-preview": "eas build --platform android --profile development",
+    "eas-build:android-preview": "eas build --platform android --profile preview",
     "eas-build:android-dev": "eas build --platform android --profile development",
     "db:clear": "adb shell pm clear host.exp.exponent",
     "db:reset": "bun run db:clear && bun run start"
@@ -22,6 +22,7 @@
     "@react-navigation/native": "^7.2.5",
     "expo": "~55.0.26",
     "expo-constants": "~55.0.16",
+    "expo-dev-client": "~55.0.35",
     "expo-device": "~55.0.17",
     "expo-document-picker": "~55.0.13",
     "expo-file-system": "~55.0.22",
